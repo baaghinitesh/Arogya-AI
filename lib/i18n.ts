@@ -22,6 +22,24 @@ const resources = {
       
       // Features
       featuresTitle: 'Features',
+      featuresSubtitle: 'Experience healthcare assistance like never before with our AI-powered platform',
+      
+      // Trust indicators
+      hipaaCompliant: 'HIPAA Compliant',
+      available24_7: '24/7 Available',
+      healthcareFocused: 'Healthcare Focused',
+      
+      // Testimonials
+      testimonialsTitle: 'Trusted by Thousands',
+      testimonialsSubtitle: 'See what our users say about Arogya AI',
+      testimonial1: 'Arogya AI helped me understand my symptoms quickly. The multilingual support is amazing!',
+      testimonial2: 'Great service! Got immediate help through WhatsApp when I needed health advice.',
+      testimonial3: 'The AI is very helpful and provides accurate health information in Odia.',
+      
+      // CTA Section
+      ctaTitle: 'Ready to Get Started?',
+      ctaSubtitle: 'Join thousands of users who trust Arogya AI for their healthcare needs',
+      getStarted: 'Get Started Today',
       multilingualTitle: 'Multilingual Support',
       multilingualDesc: 'Chat in English, Hindi (हिन्दी), or Odia (ଓଡ଼ିଆ)',
       instant24Title: '24/7 Instant Support',
@@ -76,6 +94,24 @@ const resources = {
       
       // Features
       featuresTitle: 'विशेषताएं',
+      featuresSubtitle: 'हमारे AI-संचालित प्लेटफॉर्म के साथ स्वास्थ्य सहायता का अनुभव करें जैसा पहले कभी नहीं हुआ',
+      
+      // Trust indicators
+      hipaaCompliant: 'HIPAA अनुपालित',
+      available24_7: '24/7 उपलब्ध',
+      healthcareFocused: 'स्वास्थ्य पर केंद्रित',
+      
+      // Testimonials
+      testimonialsTitle: 'हजारों द्वारा भरोसेमंद',
+      testimonialsSubtitle: 'देखें कि हमारे उपयोगकर्ता आरोग्य AI के बारे में क्या कहते हैं',
+      testimonial1: 'आरोग्य AI ने मुझे अपने लक्षणों को जल्दी समझने में मदद की। बहुभाषी समर्थन अद्भुत है!',
+      testimonial2: 'बेहतरीन सेवा! जब मुझे स्वास्थ्य सलाह की जरूरत थी तो व्हाट्सऐप के माध्यम से तुरंत मदद मिली।',
+      testimonial3: 'AI बहुत मददगार है और ओडिया में सटीक स्वास्थ्य जानकारी प्रदान करता है।',
+      
+      // CTA Section
+      ctaTitle: 'शुरू करने के लिए तैयार हैं?',
+      ctaSubtitle: 'हजारों उपयोगकर्ताओं में शामिल हों जो अपनी स्वास्थ्य आवश्यकताओं के लिए आरोग्य AI पर भरोसा करते हैं',
+      getStarted: 'आज ही शुरुआत करें',
       multilingualTitle: 'बहुभाषी समर्थन',
       multilingualDesc: 'अंग्रेजी, हिंदी (हिन्दी), या ओडिया (ଓଡ଼ିଆ) में चैट करें',
       instant24Title: '24/7 तत्काल सहायता',
@@ -130,6 +166,24 @@ const resources = {
       
       // Features
       featuresTitle: 'ବିଶେଷତା',
+      featuresSubtitle: 'ଆମର AI-ଚାଳିତ ପ୍ଲାଟଫର୍ମ ସହିତ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟତା ଅନୁଭବ କରନ୍ତୁ ଯେପରି ପୂର୍ବରୁ କେବେ ହୋଇନାହିଁ',
+      
+      // Trust indicators
+      hipaaCompliant: 'HIPAA ଅନୁପାଳିତ',
+      available24_7: '24/7 ଉପଲବ୍ଧ',
+      healthcareFocused: 'ସ୍ୱାସ୍ଥ୍ୟ ଉପରେ କେନ୍ଦ୍ରିତ',
+      
+      // Testimonials
+      testimonialsTitle: 'ହଜାରେ ଲୋକଙ୍କ ଦ୍ୱାରା ବିଶ୍ୱସ୍ତ',
+      testimonialsSubtitle: 'ଦେଖନ୍ତୁ ଆମର ଉପଯୋଗକାରୀମାନେ ଆରୋଗ୍ୟ AI ବିଷୟରେ କଣ କୁହନ୍ତି',
+      testimonial1: 'ଆରୋଗ୍ୟ AI ମୋର ଲକ୍ଷଣଗୁଡ଼ିକୁ ଶୀଘ୍ର ବୁଝିବାରେ ସାହାଯ୍ୟ କଲା। ବହୁଭାଷିକ ସମର୍ଥନ ଅଦ୍ଭୁତ!',
+      testimonial2: 'ଉତ୍କୃଷ୍ଟ ସେବା! ଯେତେବେଳେ ମୁଁ ସ୍ୱାସ୍ଥ୍ୟ ପରାମର୍ଶ ଆବଶ୍ୟକ କରୁଥିଲି, ହ୍ୱାଟସ୍ଆପ୍ ମାଧ୍ୟମରେ ତୁରନ୍ତ ସାହାଯ୍ୟ ପାଇଲି।',
+      testimonial3: 'AI ବହୁତ ସହାୟକ ଏବଂ ଓଡ଼ିଆରେ ସଠିକ୍ ସ୍ୱାସ୍ଥ୍ୟ ତଥ୍ୟ ପ୍ରଦାନ କରେ।',
+      
+      // CTA Section
+      ctaTitle: 'ଆରମ୍ଭ କରିବା ପାଇଁ ପ୍ରସ୍ତୁତ?',
+      ctaSubtitle: 'ହଜାରେ ଉପଯୋଗକାରୀଙ୍କ ସହିତ ଯୋଗ ଦିଅନ୍ତୁ ଯେଉଁମାନେ ସେମାନଙ୍କର ସ୍ୱାସ୍ଥ୍ୟ ଆବଶ୍ୟକତା ପାଇଁ ଆରୋଗ୍ୟ AI ଉପରେ ଭରସା କରନ୍ତି',
+      getStarted: 'ଆଜି ହିଁ ଆରମ୍ଭ କରନ୍ତୁ',
       multilingualTitle: 'ବହୁଭାଷିକ ସମର୍ଥନ',
       multilingualDesc: 'ଇଂରାଜୀ, ହିନ୍ଦୀ (हिन्दी), କିମ୍ବା ଓଡ଼ିଆ (ଓଡ଼ିଆ)ରେ ଚାଟ୍ କରନ୍ତୁ',
       instant24Title: '24/7 ତୁରନ୍ତ ସହାୟତା',

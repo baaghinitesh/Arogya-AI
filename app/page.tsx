@@ -79,15 +79,15 @@ const HomePage = () => {
               <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500 text-sm">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="w-5 h-5 text-green-500" />
-                  <span>HIPAA Compliant</span>
+                  <span>{t('hipaaCompliant')}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <ClockIcon className="w-5 h-5 text-blue-500" />
-                  <span>24/7 Available</span>
+                  <span>{t('available24_7')}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <HeartIcon className="w-5 h-5 text-red-500" />
-                  <span>Healthcare Focused</span>
+                  <span>{t('healthcareFocused')}</span>
                 </div>
               </div>
             </motion.div>
@@ -109,7 +109,7 @@ const HomePage = () => {
               {t('featuresTitle')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience healthcare assistance like never before with our AI-powered platform
+              {t('featuresSubtitle')}
             </p>
           </motion.div>
 
