@@ -71,18 +71,18 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Menu as="div" className="relative">
               <MenuButton className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/50 backdrop-blur-sm border border-gray-200 hover:bg-white/70 transition-all duration-200">
-                <span className="text-sm font-medium">{currentLanguage.nativeName}</span>
-                <ChevronDownIcon className="w-4 h-4" />
+                <span className="text-sm font-medium text-gray-800">{currentLanguage.nativeName}</span>
+                <ChevronDownIcon className="w-4 h-4 text-gray-600" />
               </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200 py-1">
+              <MenuItems className="absolute right-0 mt-2 w-48 bg-white backdrop-blur-md rounded-lg shadow-lg border border-gray-200 py-1">
                 {supportedLanguages.map((language) => (
                   <MenuItem key={language.code}>
                     {({ active }) => (
                       <button
                         onClick={() => changeLanguage(language.code)}
                         className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
-                          active ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-                        } ${currentLanguage.code === language.code ? 'font-semibold text-blue-600' : ''}`}
+                          active ? 'bg-blue-50 text-blue-700' : 'text-gray-800'
+                        } ${currentLanguage.code === language.code ? 'font-semibold text-blue-700 bg-blue-50' : ''}`}
                       >
                         {language.nativeName} ({language.name})
                       </button>

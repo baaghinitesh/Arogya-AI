@@ -6,9 +6,10 @@ A production-ready Next.js frontend for Arogya AI, a WhatsApp-first health assis
 
 ### Core Features
 - **WhatsApp-First Design**: Primary interaction through WhatsApp with seamless wa.me integration
-- **Web Chat Fallback**: ChatGPT-like interface for users without WhatsApp access
+- **Advanced Web Chat Interface**: ChatGPT-style three-column layout with conversation library
 - **Multilingual Support**: Full support for English, Hindi (हिन्दी), and Odia (ଓଡ଼ିଆ)
 - **AI-Powered Health Assistance**: Intelligent symptom assessment and health guidance
+- **Voice Support**: Free client-side speech recognition and text-to-speech
 - **Mobile-First Responsive Design**: Optimized for all devices with progressive enhancement
 
 ### UI/UX Features
@@ -18,11 +19,21 @@ A production-ready Next.js frontend for Arogya AI, a WhatsApp-first health assis
 - **Contact Form**: Validation and file upload capabilities
 - **Logo Uploader**: Dynamic branding with favicon generation
 
+### Chat Interface Features
+- **Three-Column Layout**: Conversation library, chat stage, and collapsible sidebar
+- **Session Management**: Persistent chat sessions with MongoDB storage
+- **Smart Grouping**: Conversations organized by Today/Yesterday/Last 7 Days/Older
+- **Real-time Streaming**: Word-by-word AI response streaming with typing indicators
+- **Voice Integration**: Speech-to-text input and text-to-speech output (free Web APIs)
+- **File Upload Support**: Image, PDF, and document sharing capabilities
+- **Message Actions**: Copy, like/dislike, regenerate, and share functionality
+- **Search & Filter**: Find conversations across history with full-text search
+
 ### Technical Features
 - **SEO Optimized**: Meta tags, structured data (JSON-LD), sitemap generation
 - **Accessibility First**: ARIA attributes, keyboard navigation, screen reader support
 - **PWA Ready**: Manifest, service worker ready, offline capabilities
-- **Backend Integration**: Axios-based API client for Python/RASA endpoints
+- **Backend Integration**: RESTful API with MongoDB for chat persistence
 - **Type-Safe**: Full TypeScript implementation with proper typing
 
 ## 🛠️ Tech Stack
@@ -37,6 +48,113 @@ A production-ready Next.js frontend for Arogya AI, a WhatsApp-first health assis
 - **State Management**: React Context + SWR
 - **Form Handling**: Native React with validation
 - **SEO**: Next.js Metadata API + JSON-LD
+
+## 🗄️ Database Schema
+
+### MongoDB Chat Sessions
+
+The chat interface uses MongoDB to store conversation sessions:
+
+```typescript
+interface ChatSession {
+  _id: ObjectId;
+  userId: string;
+  title: string;  // Auto-generated from first message
+  language: 'en' | 'hi' | 'od';
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  metadata: {
+    totalMessages: number;
+    lastActivity: Date;
+    category?: string;
+    tags?: string[];
+  };
+}
+
+interface Message {
+  _id: string;
+  role: 'user' | 'ai';
+  content: string;
+  timestamp: Date;
+  isStreaming?: boolean;
+  metadata?: {
+    tokens?: number;
+    model?: string;
+    confidence?: number;
+  };
+}
+```
+
+### API Endpoints
+
+#### Chat Sessions
+```typescript
+// Get user's chat sessions
+GET /api/chat/sessions?userId={userId}
+
+// Create new chat session
+POST /api/chat/sessions
+{
+  "userId": "user_123",
+  "language": "en",
+  "initialMessage": "Hello" // optional
+}
+
+// Update session (e.g., title)
+PATCH /api/chat/sessions/{sessionId}
+{
+  "title": "Health Consultation"
+}
+
+// Delete session (soft delete)
+DELETE /api/chat/sessions/{sessionId}
+```
+
+#### Chat Messages
+```typescript
+// Send message and get AI response
+POST /api/chat/messages
+{
+  "sessionId": "session_id",
+  "message": "I have a fever",
+  "userId": "user_123"
+}
+
+// Response
+{
+  "userMessage": { /* Message object */ },
+  "aiMessage": { /* AI response message */ },
+  "success": true
+}
+```
+
+## 💬 Chat Interface Usage
+
+### Navigation
+- **Access**: Visit `/chat` to open the chat interface
+- **Back Navigation**: Top-left back arrow returns to home page
+- **Language Switch**: Top-right dropdown changes conversation language
+- **Mobile Support**: Sidebar collapses to hamburger menu on mobile
+
+### Chat Management
+1. **New Chat**: Click "New Chat" button to start fresh conversation
+2. **Session History**: Browse past conversations in left sidebar
+3. **Search**: Use search bar to find specific conversations
+4. **Auto-grouping**: Sessions automatically grouped by recency
+
+### Voice Features (Free & Client-Side)
+- **Speech Input**: Click microphone button to speak your message
+- **Text-to-Speech**: Click speaker icon on AI messages to hear responses
+- **Language Support**: Voice recognition works in English, Hindi, and Odia
+- **No API Costs**: Uses browser's built-in Web Speech API
+
+### Message Features
+- **Streaming Responses**: AI replies appear word-by-word with typing effect
+- **Message Actions**: Hover over AI messages for copy, like, regenerate options
+- **File Upload**: Click paperclip to attach images or documents
+- **Keyboard Shortcuts**: Enter to send, Shift+Enter for new line
 
 ## 📦 Installation
 
@@ -73,7 +191,8 @@ A production-ready Next.js frontend for Arogya AI, a WhatsApp-first health assis
    ```
 
 5. **Open in browser**
-   Navigate to `http://localhost:3000`
+   - Home page: `http://localhost:3000`
+   - Chat interface: `http://localhost:3000/chat`
 
 ## 🔧 Configuration
 

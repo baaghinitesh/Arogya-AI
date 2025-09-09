@@ -396,7 +396,6 @@ const HomePage = () => {
               <WhatsAppButton 
                 variant="hero"
                 message="Hi! I'm ready to start using Arogya AI for health assistance."
-                className="bg-white text-green-600 hover:bg-gray-100"
               >
                 Start WhatsApp Chat
               </WhatsAppButton>

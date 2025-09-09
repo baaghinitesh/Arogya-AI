@@ -6,10 +6,10 @@ import { ObjectId } from 'mongodb';
 // GET /api/chat/sessions/[sessionId] - Get specific chat session
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await context.params;
 
     if (!ObjectId.isValid(sessionId)) {
       return NextResponse.json(
@@ -43,10 +43,10 @@ export async function GET(
 // PATCH /api/chat/sessions/[sessionId] - Update chat session
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await context.params;
     const updates = await request.json();
 
     if (!ObjectId.isValid(sessionId)) {
@@ -94,10 +94,10 @@ export async function PATCH(
 // DELETE /api/chat/sessions/[sessionId] - Soft delete chat session
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await context.params;
 
     if (!ObjectId.isValid(sessionId)) {
       return NextResponse.json(

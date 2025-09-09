@@ -1,138 +1,251 @@
-import { useState, useCallback, useEffect } from 'react';
-import apiClient, { ChatMessage, ChatResponse, ApiResponse } from '../api/client';
+import { useState, useCallback, useRef } from 'react';
+import { ChatSession, Message, CreateChatSessionRequest, SendMessageRequest } from '@/lib/types/chat';
 
 export interface UseChatOptions {
-  autoCreateSession?: boolean;
-  language?: 'en' | 'hi' | 'od';
   onError?: (error: string) => void;
-  onResponse?: (response: ChatResponse) => void;
+  onSessionCreated?: (session: ChatSession) => void;
+  onMessageSent?: (userMessage: Message, aiMessage: Message) => void;
 }
 
 export interface UseChatReturn {
-  messages: ChatMessage[];
+  // State
+  sessions: ChatSession[];
+  currentSession: ChatSession | null;
+  messages: Message[];
   isLoading: boolean;
+  isStreaming: boolean;
   error: string | null;
-  sendMessage: (message: string) => Promise<boolean>;
-  clearMessages: () => void;
-  loadHistory: () => Promise<void>;
-  isConnected: boolean;
+
+  // Actions
+  loadSessions: (userId: string) => Promise<void>;
+  createSession: (request: CreateChatSessionRequest) => Promise<ChatSession | null>;
+  setCurrentSession: (session: ChatSession | null) => void;
+  sendMessage: (request: SendMessageRequest) => Promise<void>;
+  updateSessionTitle: (sessionId: string, title: string) => Promise<void>;
+  deleteSession: (sessionId: string) => Promise<void>;
+  clearError: () => void;
+  stopStreaming: () => void;
 }
 
 export const useChat = (options: UseChatOptions = {}): UseChatReturn => {
-  const {
-    autoCreateSession = true,
-    language = 'en',
-    onError,
-    onResponse
-  } = options;
+  const { onError, onSessionCreated, onMessageSent } = options;
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSession, setCurrentSessionState] = useState<ChatSession | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
 
-  // Initialize session on mount
-  useEffect(() => {
-    if (autoCreateSession) {
-      initializeSession();
-    }
-  }, [autoCreateSession, language]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const initializeSession = async () => {
-    try {
-      const response = await apiClient.createSession(language);
-      if (response.success) {
-        setIsConnected(true);
-        await loadHistory();
-      } else {
-        setError(response.error || 'Failed to initialize session');
-        setIsConnected(false);
-      }
-    } catch (err) {
-      setError('Failed to connect to the server');
-      setIsConnected(false);
-    }
-  };
+  const handleError = useCallback((errorMessage: string) => {
+    setError(errorMessage);
+    onError?.(errorMessage);
+  }, [onError]);
 
-  const sendMessage = useCallback(async (message: string): Promise<boolean> => {
-    if (!message.trim()) return false;
-
-    setIsLoading(true);
+  const clearError = useCallback(() => {
     setError(null);
+  }, []);
 
-    // Add user message immediately for better UX
-    const userMessage: ChatMessage = {
-      message: message.trim(),
-      sender: 'user',
-      timestamp: new Date().toISOString(),
-      language,
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-
+  const loadSessions = useCallback(async (userId: string) => {
     try {
-      const response: ApiResponse<ChatResponse> = await apiClient.sendChatMessage(
-        message.trim(),
-        language
-      );
-
-      if (response.success && response.data) {
-        // Add bot response
-        const botMessage: ChatMessage = {
-          message: response.data.response,
-          sender: 'bot',
-          timestamp: new Date().toISOString(),
-          language,
-          metadata: {
-            confidence: response.data.confidence,
-            suggestions: response.data.suggestions,
-            followUpQuestions: response.data.followUpQuestions,
-            requiresHuman: response.data.requiresHuman,
-          },
-        };
-
-        setMessages(prev => [...prev, botMessage]);
-        onResponse?.(response.data);
-        return true;
-      } else {
-        const errorMsg = response.error || 'Failed to get response';
-        setError(errorMsg);
-        onError?.(errorMsg);
-        return false;
+      setIsLoading(true);
+      const response = await fetch(`/api/chat/sessions?userId=${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to load sessions');
       }
+
+      const data = await response.json();
+      setSessions(data.sessions || []);
     } catch (err) {
-      const errorMsg = 'Network error. Please check your connection.';
-      setError(errorMsg);
-      onError?.(errorMsg);
-      return false;
+      handleError(err instanceof Error ? err.message : 'Failed to load sessions');
     } finally {
       setIsLoading(false);
     }
-  }, [language, onError, onResponse]);
+  }, [handleError]);
 
-  const loadHistory = useCallback(async () => {
+  const createSession = useCallback(async (request: CreateChatSessionRequest): Promise<ChatSession | null> => {
     try {
-      const response = await apiClient.getChatHistory();
-      if (response.success && response.data) {
-        setMessages(response.data);
+      setIsLoading(true);
+      const response = await fetch('/api/chat/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create session');
+      }
+
+      const data = await response.json();
+      const newSession = data.session;
+      
+      setSessions(prev => [newSession, ...prev]);
+      setCurrentSessionState(newSession);
+      setMessages(newSession.messages || []);
+      
+      onSessionCreated?.(newSession);
+      return newSession;
+    } catch (err) {
+      handleError(err instanceof Error ? err.message : 'Failed to create session');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [handleError, onSessionCreated]);
+
+  const setCurrentSession = useCallback((session: ChatSession | null) => {
+    setCurrentSessionState(session);
+    setMessages(session?.messages || []);
+  }, []);
+
+  const sendMessage = useCallback(async (request: SendMessageRequest) => {
+    if (isStreaming) return;
+
+    try {
+      setIsLoading(true);
+      setIsStreaming(true);
+
+      // Create abort controller for this request
+      abortControllerRef.current = new AbortController();
+
+      // Add user message immediately for better UX
+      const userMessage: Message = {
+        _id: `temp-${Date.now()}`,
+        role: 'user',
+        content: request.message.trim(),
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, userMessage]);
+
+      const response = await fetch('/api/chat/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+        signal: abortControllerRef.current.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      const data = await response.json();
+      
+      // Replace temp user message with the actual ones from server
+      setMessages(prev => [...prev.slice(0, -1), data.userMessage, data.aiMessage]);
+      
+      // Update current session with new messages
+      if (currentSession) {
+        const updatedSession: ChatSession = {
+          ...currentSession,
+          messages: [...currentSession.messages, data.userMessage, data.aiMessage],
+          updatedAt: new Date(),
+        };
+        setCurrentSessionState(updatedSession);
+        
+        // Update in sessions list
+        setSessions(prev => prev.map(s => 
+          s._id === currentSession._id ? updatedSession : s
+        ));
+      }
+
+      onMessageSent?.(data.userMessage, data.aiMessage);
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        // Request was aborted, don't show error
+        return;
+      }
+      handleError(err instanceof Error ? err.message : 'Failed to send message');
+      
+      // Remove the temporary user message on error
+      setMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsLoading(false);
+      setIsStreaming(false);
+      abortControllerRef.current = null;
+    }
+  }, [currentSession, isStreaming, handleError, onMessageSent]);
+
+  const updateSessionTitle = useCallback(async (sessionId: string, title: string) => {
+    try {
+      const response = await fetch(`/api/chat/sessions/${sessionId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update session title');
+      }
+
+      const data = await response.json();
+      const updatedSession = data.session;
+
+      setSessions(prev => prev.map(s => 
+        s._id === sessionId ? updatedSession : s
+      ));
+
+      if (currentSession?._id === sessionId) {
+        setCurrentSessionState(updatedSession);
       }
     } catch (err) {
-      console.warn('Failed to load chat history:', err);
+      handleError(err instanceof Error ? err.message : 'Failed to update session title');
+    }
+  }, [currentSession, handleError]);
+
+  const deleteSession = useCallback(async (sessionId: string) => {
+    try {
+      const response = await fetch(`/api/chat/sessions/${sessionId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete session');
+      }
+
+      setSessions(prev => prev.filter(s => s._id !== sessionId));
+      
+      if (currentSession?._id === sessionId) {
+        setCurrentSessionState(null);
+        setMessages([]);
+      }
+    } catch (err) {
+      handleError(err instanceof Error ? err.message : 'Failed to delete session');
+    }
+  }, [currentSession, handleError]);
+
+  const stopStreaming = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setIsStreaming(false);
     }
   }, []);
 
-  const clearMessages = useCallback(() => {
-    setMessages([]);
-    setError(null);
-  }, []);
-
   return {
+    // State
+    sessions,
+    currentSession,
     messages,
     isLoading,
+    isStreaming,
     error,
+
+    // Actions
+    loadSessions,
+    createSession,
+    setCurrentSession,
     sendMessage,
-    clearMessages,
-    loadHistory,
-    isConnected,
+    updateSessionTitle,
+    deleteSession,
+    clearError,
+    stopStreaming,
   };
 };
