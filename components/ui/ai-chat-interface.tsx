@@ -134,6 +134,21 @@ export default function AIChatInterface() {
     loadSessions()
   }, [])
 
+  // Auto-collapse sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarCollapsed(true)
+      }
+    }
+    
+    // Check on mount
+    handleResize()
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const loadSessions = async () => {
     try {
       const response = await fetch('/api/chat/sessions')
@@ -365,24 +380,25 @@ export default function AIChatInterface() {
       <div className="flex-1 flex flex-col">
         {/* Chat Header */}
         <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 p-4 shadow-sm">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Arogya AI Assistant
               </h1>
             </div>
             
             {/* Language Selector */}
             <Select value={currentLanguage} onValueChange={(value: 'en' | 'hi' | 'or') => setCurrentLanguage(value)}>
-              <SelectTrigger className="w-40 bg-white border-slate-300 text-slate-700">
+              <SelectTrigger className="w-32 sm:w-40 bg-white border-slate-300 text-slate-700 shadow-sm">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white border-slate-200">
+              <SelectContent className="bg-white border-slate-200 shadow-lg">
                 {languages.map((lang) => (
                   <SelectItem key={lang.code} value={lang.code} className="text-slate-700 hover:bg-slate-50">
                     <span className="flex items-center space-x-2">
                       <span>{lang.flag}</span>
-                      <span>{lang.name}</span>
+                      <span className="hidden sm:inline">{lang.name}</span>
+                      <span className="sm:hidden">{lang.code.toUpperCase()}</span>
                     </span>
                   </SelectItem>
                 ))}
@@ -393,7 +409,7 @@ export default function AIChatInterface() {
 
         {/* Messages Area */}
         <ScrollArea className="flex-1 bg-gradient-to-b from-slate-50/50 to-white/50">
-          <div className="p-6 space-y-6">
+          <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {messages.map((msg) => (
               <motion.div
                 key={msg.id}
@@ -401,7 +417,7 @@ export default function AIChatInterface() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[70%] ${
+                <div className={`max-w-[85%] sm:max-w-[70%] ${
                   msg.sender === 'user'
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-l-2xl rounded-tr-2xl'
                     : 'bg-white border border-slate-200 text-slate-800 rounded-r-2xl rounded-tl-2xl shadow-sm'
@@ -462,8 +478,8 @@ export default function AIChatInterface() {
         </ScrollArea>
 
         {/* Input Area */}
-        <div className="bg-white/90 backdrop-blur-sm border-t border-slate-200 p-4">
-          <div className="flex items-end space-x-3">
+        <div className="bg-white/90 backdrop-blur-sm border-t border-slate-200 p-3 sm:p-4">
+          <div className="flex items-end space-x-2 sm:space-x-3">
             {/* Voice Input Button */}
             {speechSupported && (
               <motion.div
@@ -474,7 +490,8 @@ export default function AIChatInterface() {
                   variant={isListening ? "default" : "outline"}
                   size="lg"
                   onClick={handleVoiceToggle}
-                  className={`h-12 w-12 rounded-full border-2 ${
+                  title={isListening ? t.stop : t.speak}
+                  className={`h-12 w-12 rounded-full border-2 touch-manipulation ${
                     isListening 
                       ? 'bg-red-500 border-red-500 text-white shadow-lg animate-pulse' 
                       : 'border-slate-300 text-slate-600 hover:border-blue-400 hover:text-blue-600'
@@ -521,7 +538,8 @@ export default function AIChatInterface() {
                 onClick={handleSendMessage}
                 disabled={!message.trim() || isLoading}
                 size="lg"
-                className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg disabled:opacity-50"
+                title={t.send}
+                className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg disabled:opacity-50 touch-manipulation"
               >
                 <Send className="h-5 w-5" />
               </Button>
