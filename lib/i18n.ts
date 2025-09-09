@@ -60,6 +60,14 @@ const resources = {
       typingIndicator: 'AI is typing...',
       messagePlaceholder: 'Type your health question...',
       sendMessage: 'Send',
+      newChat: 'New Chat',
+      searchChats: 'Search chats...',
+      noChatsFound: 'No chats found',
+      noChatsYet: 'No chats yet',
+      sidebarFooter: 'Your chat history is private',
+      startListening: 'Start voice input',
+      stopListening: 'Stop listening',
+      listening: 'Listening...',
       
       // Contact Form
       contactTitle: 'Contact Us',
@@ -132,6 +140,14 @@ const resources = {
       typingIndicator: 'AI टाइप कर रहा है...',
       messagePlaceholder: 'अपना स्वास्थ्य प्रश्न टाइप करें...',
       sendMessage: 'भेजें',
+      newChat: 'नई चैट',
+      searchChats: 'चैट खोजें...',
+      noChatsFound: 'कोई चैट नहीं मिली',
+      noChatsYet: 'अभी तक कोई चैट नहीं',
+      sidebarFooter: 'आपका चैट इतिहास निजी है',
+      startListening: 'आवाज इनपुट शुरू करें',
+      stopListening: 'सुनना बंद करें',
+      listening: 'सुन रहा है...',
       
       // Contact Form
       contactTitle: 'हमसे संपर्क करें',
@@ -204,6 +220,14 @@ const resources = {
       typingIndicator: 'AI ଟାଇପ୍ କରୁଛି...',
       messagePlaceholder: 'ଆପଣଙ୍କର ସ୍ୱାସ୍ଥ୍ୟ ପ୍ରଶ୍ନ ଟାଇପ୍ କରନ୍ତୁ...',
       sendMessage: 'ପଠାନ୍ତୁ',
+      newChat: 'ନୂଆ ଚାଟ୍',
+      searchChats: 'ଚାଟ୍ ଖୋଜନ୍ତୁ...',
+      noChatsFound: 'କୌଣସି ଚାଟ୍ ମିଳିଲା ନାହିଁ',
+      noChatsYet: 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଚାଟ୍ ନାହିଁ',
+      sidebarFooter: 'ଆପଣଙ୍କର ଚାଟ୍ ଇତିହାସ ବ୍ୟକ୍ତିଗତ',
+      startListening: 'ସ୍ୱର ଇନପୁଟ୍ ଆରମ୍ଭ କରନ୍ତୁ',
+      stopListening: 'ଶୁଣିବା ବନ୍ଦ କରନ୍ତୁ',
+      listening: 'ଶୁଣୁଛି...',
       
       // Contact Form
       contactTitle: 'ଆମ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ',
