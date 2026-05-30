@@ -23,6 +23,17 @@ const HomePage = () => {
   const { t } = useTranslation();
   const [showSplash, setShowSplash] = useState(true);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('action') === 'whatsapp') {
+        const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "14155238886";
+        const cleanNumber = waNumber.replace(/\D/g, '');
+        window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent("नमस्ते! मुझे Arogya AI स्वास्थ्य सेवाओं के बारे में जानना है।")}`, '_blank');
+      }
+    }
+  }, []);
+
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
@@ -321,22 +332,22 @@ const HomePage = () => {
             {[
               {
                 name: "Priya Sharma",
-                location: "Bhubaneswar, Odisha",
+                location: "Bhubaneswar, Odisha, India",
                 text: "Arogya AI helped me understand my symptoms quickly. The multilingual support in Odia was really helpful!",
                 rating: 5,
                 avatar: "https://placehold.co/60x60/e0f2fe/1565c0?text=PS"
               },
               {
                 name: "Rajesh Kumar",
-                location: "Cuttack, Odisha", 
-                text: "24/7 availability is amazing. Got health guidance at 2 AM when my child had fever. Very grateful!",
+                location: "New Delhi, Delhi, India", 
+                text: "24/7 availability is amazing. Got health guidance in Hindi at 2 AM when my child had fever. Very grateful!",
                 rating: 5,
                 avatar: "https://placehold.co/60x60/f3e5f5/7b1fa2?text=RK"
               },
               {
                 name: "Sunita Patel",
-                location: "Rourkela, Odisha",
-                text: "The WhatsApp integration is so convenient. No need to download separate apps. Works perfectly!",
+                location: "Mumbai, Maharashtra, India",
+                text: "The WhatsApp integration is so convenient. No need to download separate apps, and the dynamic translation works perfectly!",
                 rating: 5,
                 avatar: "https://placehold.co/60x60/e8f5e8/2e7d32?text=SP"
               }

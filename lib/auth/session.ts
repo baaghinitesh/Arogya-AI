@@ -17,8 +17,17 @@ export async function comparePasswords(
   return compare(plainTextPassword, hashedPassword);
 }
 
-type SessionData = {
-  user: { id: number };
+export type SessionData = {
+  user: {
+    id: number | string;
+    phone_number?: string;
+    name?: string;
+    age?: number;
+    gender?: string;
+    pincode?: string;
+    language?: string;
+    token?: string;
+  };
   expires: string;
 };
 
@@ -57,3 +66,36 @@ export async function setSession(user: NewUser) {
     sameSite: 'lax',
   });
 }
+
+export async function setPhoneSession(phoneUser: {
+  phone_number: string;
+  name: string;
+  age?: number;
+  gender?: string;
+  pincode?: string;
+  language?: string;
+  token?: string;
+}) {
+  const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const session: SessionData = {
+    user: {
+      id: `phone_${phoneUser.phone_number}`,
+      phone_number: phoneUser.phone_number,
+      name: phoneUser.name,
+      age: phoneUser.age,
+      gender: phoneUser.gender,
+      pincode: phoneUser.pincode,
+      language: phoneUser.language,
+      token: phoneUser.token,
+    },
+    expires: expiresInOneDay.toISOString(),
+  };
+  const encryptedSession = await signToken(session);
+  (await cookies()).set('session', encryptedSession, {
+    expires: expiresInOneDay,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+  });
+}
+

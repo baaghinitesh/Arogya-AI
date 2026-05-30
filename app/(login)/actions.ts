@@ -257,3 +257,105 @@ export const updateAccount = validatedActionWithUser(
     };
   }
 );
+
+// ── PHONE NUMBER & OTP AUTH SERVER ACTIONS ────────────────────────────────
+
+import { setPhoneSession } from '@/lib/auth/session';
+
+export async function sendPhoneOtpAction(phone_number: string) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('sendPhoneOtpAction error:', error);
+    return { success: false, message: 'Failed to connect to backend server' };
+  }
+}
+
+export async function verifyPhoneOtpAction(phone_number: string, otp: string) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number, otp }),
+    });
+    const data = await response.json();
+    
+    if (data.success) {
+      // Fetch user profile from backend
+      const profileResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/${phone_number}`);
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        const user = profileData.user;
+        
+        // Save session
+        await setPhoneSession({
+          phone_number: user.phone_number,
+          name: user.name,
+          age: user.age,
+          gender: user.gender,
+          pincode: user.pincode,
+          language: user.language,
+          token: data.token,
+        });
+      } else {
+        // Fallback if profile not found (should not happen if registered)
+        await setPhoneSession({
+          phone_number,
+          name: 'Registered User',
+          token: data.token,
+        });
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('verifyPhoneOtpAction error:', error);
+    return { success: false, message: 'Failed to verify OTP' };
+  }
+}
+
+export async function registerPhoneUserAction(payload: {
+  phone_number: string;
+  name: string;
+  age: number;
+  gender: string;
+  pincode: string;
+  language: string;
+}) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { success: false, message: errorData.detail || 'Registration failed' };
+    }
+    
+    const data = await response.json();
+    
+    // Auto-login after registration
+    await setPhoneSession({
+      phone_number: data.phone_number,
+      name: data.name,
+      age: data.age,
+      gender: data.gender,
+      pincode: data.pincode,
+      language: data.language,
+      token: 'registered_via_web',
+    });
+    
+    return { success: true, user: data };
+  } catch (error) {
+    console.error('registerPhoneUserAction error:', error);
+    return { success: false, message: 'Failed to register user' };
+  }
+}

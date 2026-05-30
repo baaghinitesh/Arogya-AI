@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Translation resources
+// Translation resources for National Indian Footprint
 const resources = {
   en: {
     translation: {
@@ -12,11 +12,11 @@ const resources = {
       contact: 'Contact',
       
       // Splash Screen
-      tagline: 'Arogya AI — Your WhatsApp health assistant for Odisha',
+      tagline: 'Arogya AI — Your WhatsApp health assistant for India',
       
       // Home Page
-      heroTitle: 'AI-Powered Health Assistant for Odisha',
-      heroSubtitle: 'Get instant health guidance through WhatsApp in your preferred language - English, Hindi, or Odia',
+      heroTitle: 'AI-Powered Health Assistant for India',
+      heroSubtitle: 'Get instant health guidance through WhatsApp in your preferred language - English, Hindi, Odia, Bengali, Tamil, Telugu, and more',
       startChat: 'Start Chat on WhatsApp',
       tryWebChat: 'Try Web Chat',
       
@@ -34,14 +34,14 @@ const resources = {
       testimonialsSubtitle: 'See what our users say about Arogya AI',
       testimonial1: 'Arogya AI helped me understand my symptoms quickly. The multilingual support is amazing!',
       testimonial2: 'Great service! Got immediate help through WhatsApp when I needed health advice.',
-      testimonial3: 'The AI is very helpful and provides accurate health information in Odia.',
+      testimonial3: 'The AI is very helpful and provides accurate health information in multiple Indian languages.',
       
       // CTA Section
       ctaTitle: 'Ready to Get Started?',
       ctaSubtitle: 'Join thousands of users who trust Arogya AI for their healthcare needs',
       getStarted: 'Get Started Today',
       multilingualTitle: 'Multilingual Support',
-      multilingualDesc: 'Chat in English, Hindi (हिन्दी), or Odia (ଓଡ଼ିଆ)',
+      multilingualDesc: 'Chat in English, Hindi, Odia, Bengali, Tamil, Telugu, and other Indian languages',
       instant24Title: '24/7 Instant Support',
       instant24Desc: 'Get health guidance anytime through WhatsApp',
       personalizedTitle: 'Personalized Care',
@@ -92,11 +92,11 @@ const resources = {
       contact: 'संपर्क',
       
       // Splash Screen
-      tagline: 'आरोग्य AI — ओडिशा के लिए आपका व्हाट्सऐप स्वास्थ्य सहायक',
+      tagline: 'आरोग्य AI — भारत के लिए आपका व्हाट्सऐप स्वास्थ्य सहायक',
       
       // Home Page
-      heroTitle: 'ओडिशा के लिए AI-संचालित स्वास्थ्य सहायक',
-      heroSubtitle: 'अपनी पसंदीदा भाषा में व्हाट्सऐप के माध्यम से तत्काल स्वास्थ्य मार्गदर्शन प्राप्त करें - अंग्रेजी, हिंदी, या ओडिया',
+      heroTitle: 'भारत के लिए AI-संचालित स्वास्थ्य सहायक',
+      heroSubtitle: 'अपनी पसंदीदा भाषा में व्हाट्सऐप के माध्यम से तत्काल स्वास्थ्य मार्गदर्शन प्राप्त करें - अंग्रेजी, हिंदी, ओडिया, बंगाली, तमिल, तेलुगु, और अधिक',
       startChat: 'व्हाट्सऐप पर चैट शुरू करें',
       tryWebChat: 'वेब चैट आज़माएं',
       
@@ -114,14 +114,14 @@ const resources = {
       testimonialsSubtitle: 'देखें कि हमारे उपयोगकर्ता आरोग्य AI के बारे में क्या कहते हैं',
       testimonial1: 'आरोग्य AI ने मुझे अपने लक्षणों को जल्दी समझने में मदद की। बहुभाषी समर्थन अद्भुत है!',
       testimonial2: 'बेहतरीन सेवा! जब मुझे स्वास्थ्य सलाह की जरूरत थी तो व्हाट्सऐप के माध्यम से तुरंत मदद मिली।',
-      testimonial3: 'AI बहुत मददगार है और ओडिया में सटीक स्वास्थ्य जानकारी प्रदान करता है।',
+      testimonial3: 'AI बहुत मददगार है और कई भारतीय भाषाओं में सटीक स्वास्थ्य जानकारी प्रदान करता है।',
       
       // CTA Section
       ctaTitle: 'शुरू करने के लिए तैयार हैं?',
       ctaSubtitle: 'हजारों उपयोगकर्ताओं में शामिल हों जो अपनी स्वास्थ्य आवश्यकताओं के लिए आरोग्य AI पर भरोसा करते हैं',
       getStarted: 'आज ही शुरुआत करें',
       multilingualTitle: 'बहुभाषी समर्थन',
-      multilingualDesc: 'अंग्रेजी, हिंदी (हिन्दी), या ओडिया (ଓଡ଼ିଆ) में चैट करें',
+      multilingualDesc: 'अंग्रेजी, हिंदी, ओडिया, बंगाली, तमिल, तेलुगु, और अन्य भारतीय भाषाओं में चैट करें',
       instant24Title: '24/7 तत्काल सहायता',
       instant24Desc: 'व्हाट्सऐप के माध्यम से कभी भी स्वास्थ्य मार्गदर्शन प्राप्त करें',
       personalizedTitle: 'व्यक्तिगत देखभाल',
@@ -172,11 +172,11 @@ const resources = {
       contact: 'ଯୋଗାଯୋଗ',
       
       // Splash Screen
-      tagline: 'ଆରୋଗ୍ୟ AI — ଓଡ଼ିଶା ପାଇଁ ଆପଣଙ୍କର ହ୍ୱାଟସ୍ଆପ୍ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ',
+      tagline: 'ଆରୋଗ୍ୟ AI — ଭାରତ ପାଇଁ ଆପଣଙ୍କର ହ୍ୱାଟସ୍ଆପ୍ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ',
       
       // Home Page
-      heroTitle: 'ଓଡ଼ିଶା ପାଇଁ AI-ଚାଳିତ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ',
-      heroSubtitle: 'ଆପଣଙ୍କର ପସନ୍ଦିତ ଭାଷାରେ ହ୍ୱାଟସ୍ଆପ୍ ମାଧ୍ୟମରେ ତୁରନ୍ତ ସ୍ୱାସ୍ଥ୍ୟ ମାର୍ଗଦର୍ଶନ ପାଆନ୍ତୁ - ଇଂରାଜୀ, ହିନ୍ଦୀ, କିମ୍ବା ଓଡ଼ିଆ',
+      heroTitle: 'ଭାରତ ପାଇଁ AI-ଚାଳିତ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ',
+      heroSubtitle: 'ଆପଣଙ୍କର ପସନ୍ଦିତ ଭାଷାରେ ହ୍ୱାଟସ୍ଆପ୍ ମାଧ୍ୟମରେ ତୁରନ୍ତ ସ୍ୱାସ୍ଥ୍ୟ ମାର୍ଗଦର୍ଶନ ପାଆନ୍ତୁ - ଇଂରାଜୀ, ହିନ୍ଦୀ, ଓଡ଼ିଆ, ବଙ୍ଗଳା, ତାମିଲ୍, ତେଲୁଗୁ ଏବଂ ଅନ୍ୟାନ୍ୟ',
       startChat: 'ହ୍ୱାଟସ୍ଆପରେ ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ',
       tryWebChat: 'ୱେବ୍ ଚାଟ୍ ଚେଷ୍ଟା କରନ୍ତୁ',
       
@@ -194,14 +194,14 @@ const resources = {
       testimonialsSubtitle: 'ଦେଖନ୍ତୁ ଆମର ଉପଯୋଗକାରୀମାନେ ଆରୋଗ୍ୟ AI ବିଷୟରେ କଣ କୁହନ୍ତି',
       testimonial1: 'ଆରୋଗ୍ୟ AI ମୋର ଲକ୍ଷଣଗୁଡ଼ିକୁ ଶୀଘ୍ର ବୁଝିବାରେ ସାହାଯ୍ୟ କଲା। ବହୁଭାଷିକ ସମର୍ଥନ ଅଦ୍ଭୁତ!',
       testimonial2: 'ଉତ୍କୃଷ୍ଟ ସେବା! ଯେତେବେଳେ ମୁଁ ସ୍ୱାସ୍ଥ୍ୟ ପରାମର୍ଶ ଆବଶ୍ୟକ କରୁଥିଲି, ହ୍ୱାଟସ୍ଆପ୍ ମାଧ୍ୟମରେ ତୁରନ୍ତ ସାହାଯ୍ୟ ପାଇଲି।',
-      testimonial3: 'AI ବହୁତ ସହାୟକ ଏବଂ ଓଡ଼ିଆରେ ସଠିକ୍ ସ୍ୱାସ୍ଥ୍ୟ ତଥ୍ୟ ପ୍ରଦାନ କରେ।',
+      testimonial3: 'AI ବହୁତ ସହାୟକ ଏବଂ ବିଭିନ୍ନ ଭାରତୀୟ ଭାଷାରେ ସଠିକ୍ ସ୍ୱାସ୍ଥ୍ୟ ତଥ୍ୟ ପ୍ରଦାନ କରେ।',
       
       // CTA Section
       ctaTitle: 'ଆରମ୍ଭ କରିବା ପାଇଁ ପ୍ରସ୍ତୁତ?',
       ctaSubtitle: 'ହଜାରେ ଉପଯୋଗକାରୀଙ୍କ ସହିତ ଯୋଗ ଦିଅନ୍ତୁ ଯେଉଁମାନେ ସେମାନଙ୍କର ସ୍ୱାସ୍ଥ୍ୟ ଆବଶ୍ୟକତା ପାଇଁ ଆରୋଗ୍ୟ AI ଉପରେ ଭରସା କରନ୍ତି',
       getStarted: 'ଆଜି ହିଁ ଆରମ୍ଭ କରନ୍ତୁ',
       multilingualTitle: 'ବହୁଭାଷିକ ସମର୍ଥନ',
-      multilingualDesc: 'ଇଂରାଜୀ, ହିନ୍ଦୀ (हिन्दी), କିମ୍ବା ଓଡ଼ିଆ (ଓଡ଼ିଆ)ରେ ଚାଟ୍ କରନ୍ତୁ',
+      multilingualDesc: 'ଇଂରାଜୀ, ହିନ୍ଦୀ, ଓଡ଼ିଆ, ବଙ୍ଗଳା, ତାମିଲ୍, ତେଲୁଗୁ ଏବଂ ଅନ୍ୟ ଭାରତୀୟ ଭାଷାରେ ଚାଟ୍ କରନ୍ତୁ',
       instant24Title: '24/7 ତୁରନ୍ତ ସହାୟତା',
       instant24Desc: 'ହ୍ୱାଟସ୍ଆପ୍ ମାଧ୍ୟମରେ ଯେକୌଣସି ସମୟରେ ସ୍ୱାସ୍ଥ୍ୟ ମାର୍ଗଦର୍ଶନ ପାଆନ୍ତୁ',
       personalizedTitle: 'ବ୍ୟକ୍ତିଗତ ଯତ୍ନ',
@@ -226,7 +226,7 @@ const resources = {
       noChatsYet: 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଚାଟ୍ ନାହିଁ',
       sidebarFooter: 'ଆପଣଙ୍କର ଚାଟ୍ ଇତିହାସ ବ୍ୟକ୍ତିଗତ',
       startListening: 'ସ୍ୱର ଇନପୁଟ୍ ଆରମ୍ଭ କରନ୍ତୁ',
-      stopListening: 'ଶୁଣିବା ବନ୍ଦ କରନ୍ତୁ',
+      stopListening: 'ଶຸଣିବା ବନ୍ଦ କରନ୍ତୁ',
       listening: 'ଶୁଣୁଛି...',
       
       // Contact Form

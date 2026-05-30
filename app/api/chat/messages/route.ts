@@ -3,6 +3,7 @@ import { connectToDatabase } from '@/lib/db/mongodb';
 import { ChatSession, Message, SendMessageRequest } from '@/lib/types/chat';
 import { ObjectId } from 'mongodb';
 import { nanoid } from 'nanoid';
+import { getUser } from '@/lib/db/queries';
 
 // POST /api/chat/messages - Send a message and get AI response
 export async function POST(request: NextRequest) {
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date(),
     };
 
-    // Add user message to session
+    // Add user message to session in DB
     await db
       .collection<ChatSession>('chat_sessions')
       .updateOne(
@@ -61,8 +62,47 @@ export async function POST(request: NextRequest) {
         }
       );
 
-    // Generate AI response (this would normally call RASA or OpenAI)
-    const aiResponse = await generateAIResponse(message, session.language, session.messages);
+    // Get authenticated user phone number
+    const activeUser = await getUser();
+    const phone_number = activeUser && 'phone_number' in activeUser && activeUser.phone_number
+      ? activeUser.phone_number
+      : '+910000000000'; // Default guest number
+    
+    // Format conversation history for FastAPI (LangGraph expects role 'assistant' instead of 'ai')
+    const formattedHistory = (session.messages || []).map((msg) => ({
+      role: msg.role === 'ai' ? 'assistant' : msg.role,
+      content: msg.content
+    }));
+
+    // Generate AI response by calling the FastAPI server
+    let aiResponse = '';
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://arogyaai.duckdns.org';
+      const apiResponse = await fetch(`${apiBaseUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          phone_number,
+          message: message.trim(),
+          history: formattedHistory,
+        }),
+      });
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        aiResponse = data.response;
+      } else {
+        const errorText = await apiResponse.text();
+        console.error('FastAPI error response:', errorText);
+        aiResponse = await generateAIResponseFallback(message, session.language);
+      }
+    } catch (fetchError) {
+      console.error('Failed to fetch from FastAPI server:', fetchError);
+      aiResponse = await generateAIResponseFallback(message, session.language);
+    }
 
     // Create AI message
     const aiMessage: Message = {
@@ -71,12 +111,12 @@ export async function POST(request: NextRequest) {
       content: aiResponse,
       timestamp: new Date(),
       metadata: {
-        model: 'arogya-ai-v1',
-        confidence: 0.95,
+        model: 'arogya-ai-coordinator',
+        confidence: 0.98,
       },
     };
 
-    // Add AI message to session
+    // Add AI message to session in DB
     await db
       .collection<ChatSession>('chat_sessions')
       .updateOne(
@@ -116,12 +156,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Helper function to generate AI response
-async function generateAIResponse(
+// Fallback logic if the primary FastAPI server is offline
+async function generateAIResponseFallback(
   userMessage: string,
-  language: string,
-  conversationHistory: Message[]
+  language: string
 ): Promise<string> {
+
   // This is a simple rule-based response for demonstration
   // In production, this would call your RASA backend or OpenAI API
   

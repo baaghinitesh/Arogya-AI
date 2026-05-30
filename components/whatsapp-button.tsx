@@ -15,13 +15,14 @@ interface WhatsAppButtonProps {
 const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   variant = 'hero',
   message = "Hi! I need health assistance from Arogya AI",
-  phoneNumber = "1234567890", // Replace with actual WhatsApp number
+  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "14155238886",
   className = "",
   children
 }) => {
   const generateWhatsAppUrl = () => {
+    const cleanNumber = phoneNumber.replace(/\D/g, '');
     const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
   };
 
   const handleClick = () => {

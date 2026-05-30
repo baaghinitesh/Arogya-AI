@@ -58,7 +58,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'WhatsApp Support',
         short_name: 'WhatsApp',
         description: 'Get help through WhatsApp',
-        url: siteConfig.links.whatsapp,
+        url: '/?action=whatsapp',
         icons: [
           {
             src: '/shortcut-whatsapp.png',

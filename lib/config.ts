@@ -1,11 +1,11 @@
 export const siteConfig = {
   name: "Arogya AI",
-  title: "Arogya AI - Your WhatsApp Health Assistant for Odisha",
-  description: "Get instant AI-powered health guidance through WhatsApp in English, Hindi, or Odia. 24/7 healthcare assistance for the people of Odisha with personalized symptom assessment and medical recommendations.",
+  title: "Arogya AI - Your WhatsApp Health Assistant for India",
+  description: "Get instant AI-powered health guidance through WhatsApp in English, Hindi, Odia, Bengali, Tamil, Telugu, and other native languages. 24/7 healthcare assistance for the people of India with personalized symptom assessment and medical recommendations.",
   url: "https://arogyaai.com",
   ogImage: "/og-image.jpg",
   links: {
-    whatsapp: "https://wa.me/1234567890",
+    whatsapp: "https://wa.me/14155238886",
     github: "https://github.com/arogyaai/frontend",
     contact: "/contact",
     privacy: "/privacy",
@@ -15,7 +15,8 @@ export const siteConfig = {
     "health assistant",
     "AI healthcare",
     "WhatsApp health",
-    "Odisha healthcare",
+    "India healthcare",
+    "Indian health assistant",
     "medical AI",
     "symptom checker",
     "health guidance",
@@ -36,12 +37,12 @@ export const siteConfig = {
   contact: {
     email: 'support@arogyaai.com',
     phone: '+91 98765 43210',
-    address: 'Bhubaneswar, Odisha, India'
+    address: 'New Delhi, India'
   },
   social: {
-    whatsapp: 'https://wa.me/1234567890',
+    whatsapp: 'https://wa.me/14155238886',
     facebook: 'https://facebook.com/arogyaai',
     twitter: 'https://twitter.com/arogyaai',
     linkedin: 'https://linkedin.com/company/arogyaai'
   }
-};
+};

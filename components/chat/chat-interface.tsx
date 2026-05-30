@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -35,12 +36,8 @@ declare global {
   }
 }
 
-// Mock user data - in production, get from auth context
-const mockUser = {
-  id: 'user_123',
-  name: 'User',
-  avatar: '/placeholder-avatar.png'
-};
+// Dynamic authenticated user details loaded reactively
+
 
 // Language options for the chat interface
 const languages = [
@@ -66,6 +63,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [backgroundTheme, setBackgroundTheme] = useState('default');
+  const [user, setUser] = useState<any>(null);
+  const [isGuest, setIsGuest] = useState(true);
   
   // Voice support
   const [speechRecognition, setSpeechRecognition] = useState<SpeechRecognitionState>({
@@ -95,10 +94,34 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Load chat sessions
+  // Fetch authenticated user details on mount
   useEffect(() => {
-    loadChatSessions();
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/user');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.phone_number) {
+            setUser(data);
+            setIsGuest(false);
+          } else {
+            setIsGuest(true);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch user session:', e);
+        setIsGuest(true);
+      }
+    };
+    fetchUser();
   }, []);
+
+  // Load chat sessions when user state is initialized
+  useEffect(() => {
+    if (user !== undefined) {
+      loadChatSessions();
+    }
+  }, [user]);
 
   // Auto-scroll when messages change
   useEffect(() => {
@@ -177,8 +200,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
   };
 
   const loadChatSessions = async () => {
+    const currentUserId = user?.phone_number || 'guest_user';
     try {
-      const response = await fetch(`/api/chat/sessions?userId=${mockUser.id}`);
+      const response = await fetch(`/api/chat/sessions?userId=${currentUserId}`);
       const data = await response.json();
       if (response.ok) {
         setSessions(data.sessions);
@@ -190,6 +214,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
 
   // createNewSession now returns the created session (or null)
   const createNewSession = async (): Promise<ChatSession | null> => {
+    const currentUserId = user?.phone_number || 'guest_user';
     try {
       const response = await fetch('/api/chat/sessions', {
         method: 'POST',
@@ -197,7 +222,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: mockUser.id,
+          userId: currentUserId,
           language: currentLanguage.code as ChatLanguage,
         }),
       });
@@ -242,6 +267,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
     };
     setMessages(prev => [...prev, userMessage]);
 
+    const currentUserId = user?.phone_number || 'guest_user';
     try {
       const response = await fetch('/api/chat/messages', {
         method: 'POST',
@@ -251,7 +277,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
         body: JSON.stringify({
           sessionId,
           message: messageToSend,
-          userId: mockUser.id,
+          userId: currentUserId,
         }),
       });
 
@@ -321,6 +347,33 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
           languages={languages}
           currentTheme={currentTheme}
         />
+
+        {isGuest && (
+          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10 backdrop-blur-md border-b border-purple-500/10 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm z-10">
+            <div className="flex items-center gap-2 text-purple-800">
+              <span className="text-base">🛡️</span>
+              <p className="font-semibold text-center sm:text-left">
+                You are chatting as a <strong className="text-indigo-700">Guest</strong>. Register your number to unlock full access & 24/7 WhatsApp sync!
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/register"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+              >
+                Register Now
+              </Link>
+              <a
+                href="https://wa.me/14155238886"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+              >
+                Go to WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
 
         {currentSession ? (
           <>

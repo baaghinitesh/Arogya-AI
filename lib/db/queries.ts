@@ -10,30 +10,39 @@ export async function getUser() {
     return null;
   }
 
-  const sessionData = await verifyToken(sessionCookie.value);
-  if (
-    !sessionData ||
-    !sessionData.user ||
-    typeof sessionData.user.id !== 'number'
-  ) {
+  try {
+    const sessionData = await verifyToken(sessionCookie.value);
+    if (
+      !sessionData ||
+      !sessionData.user
+    ) {
+      return null;
+    }
+
+    if (new Date(sessionData.expires) < new Date()) {
+      return null;
+    }
+
+    // Direct support for phone sessions without PostgreSQL dependency
+    if (sessionData.user.phone_number) {
+      return sessionData.user;
+    }
+
+    const user = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, Number(sessionData.user.id)), isNull(users.deletedAt)))
+      .limit(1);
+
+    if (user.length === 0) {
+      return null;
+    }
+
+    return user[0];
+  } catch (error) {
+    console.error('Error verifying session token:', error);
     return null;
   }
-
-  if (new Date(sessionData.expires) < new Date()) {
-    return null;
-  }
-
-  const user = await db
-    .select()
-    .from(users)
-    .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
-    .limit(1);
-
-  if (user.length === 0) {
-    return null;
-  }
-
-  return user[0];
 }
 
 export async function getActivityLogs() {
@@ -41,6 +50,9 @@ export async function getActivityLogs() {
   if (!user) {
     throw new Error('User not authenticated');
   }
+
+  // Safe cast for phone-based session IDs
+  const userId = typeof user.id === 'string' ? 0 : user.id;
 
   return await db
     .select({
@@ -53,7 +65,7 @@ export async function getActivityLogs() {
     })
     .from(activityLogs)
     .leftJoin(users, eq(activityLogs.userId, users.id))
-    .where(eq(activityLogs.userId, user.id))
+    .where(eq(activityLogs.userId, userId))
     .orderBy(desc(activityLogs.timestamp))
     .limit(10);
 }
