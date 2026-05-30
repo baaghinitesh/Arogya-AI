@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
+import Script from 'next/script';
 import { SWRConfig } from 'swr';
 import Navbar from '@/components/navbar';
 import { ThemeProvider } from '@/contexts/theme-context';
@@ -106,6 +107,24 @@ export default function RootLayout({
             </SWRConfig>
           </LanguageProvider>
         </ThemeProvider>
+
+        {/* Dynamic Global Website Auto-Translation Widget */}
+        <div id="google_translate_element" style={{ display: 'none' }} className="hidden" />
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            window.googleTranslateElementInit = function() {
+              new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+              }, 'google_translate_element');
+            };
+          `}
+        </Script>
+        <Script 
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" 
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
