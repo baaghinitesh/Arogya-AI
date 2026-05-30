@@ -375,6 +375,7 @@ const HomePage = () => {
                     className="w-12 h-12 rounded-full mr-4"
                     width={48}
                     height={48}
+                    priority={index === 0}
                   />
                   <div>
                     <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>

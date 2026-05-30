@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
@@ -17,13 +17,36 @@ const Navbar = () => {
   const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const diff = currentScrollY - lastScrollY.current;
+
+          // Show navbar when scrolling up or near top
+          if (diff < -6 || currentScrollY < 60) {
+            setIsVisible(true);
+          }
+          // Hide navbar when scrolling down past 80px
+          else if (diff > 6 && currentScrollY > 80) {
+            setIsVisible(false);
+            setIsMobileMenuOpen(false); // close mobile menu on hide
+          }
+
+          setIsScrolled(currentScrollY > 20);
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -42,11 +65,17 @@ const Navbar = () => {
   return (
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
-        isScrolled 
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg border-gray-200/60 dark:border-gray-800/80' 
+      animate={{
+        y: isVisible ? 0 : -100,
+        opacity: isVisible ? 1 : 0,
+      }}
+      transition={{
+        y: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 },
+      }}
+      className={`fixed top-0 left-0 right-0 z-50 border-b ${
+        isScrolled
+          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg border-gray-200/60 dark:border-gray-800/80'
           : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md border-gray-200/50 dark:border-gray-800/60'
       }`}
     >
