@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   PaperAirplaneIcon,
@@ -322,6 +322,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
     }
   };
 
+  const handleSelectSession = (session: ChatSession) => {
+    setCurrentSession(session);
+    setMessages(session.messages || []);
+    if (window.innerWidth < 1024) {
+      setIsSidebarCollapsed(true);
+    }
+  };
+
   return (
     <div className={`flex h-[calc(100vh-80px)] mt-20 ${currentTheme.chatContainer} ${className}`}>
       {/* Sidebar */}
@@ -332,7 +340,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
         searchQuery={searchQuery}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         onCreateNewSession={createNewSession}
-        onSelectSession={setCurrentSession}
+        onSelectSession={handleSelectSession}
         onSearchChange={setSearchQuery}
       />
 
@@ -349,29 +357,42 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
         />
 
         {isGuest && (
-          <div className="bg-gradient-to-r from-cyan-500/10 via-teal-500/10 to-emerald-500/10 backdrop-blur-md border-b border-teal-500/10 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm z-10">
-            <div className="flex items-center gap-2 text-teal-800">
-              <span className="text-base">🛡️</span>
-              <p className="font-semibold text-center sm:text-left">
-                You are chatting as a <strong className="text-teal-700">Guest</strong>. Register your number to unlock full access & 24/7 WhatsApp sync!
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link
-                href="/register"
-                className="bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
-              >
-                Register Now
-              </Link>
-              <a
-                href="https://wa.me/14155238886"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
-              >
-                Go to WhatsApp
-              </a>
-            </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-8 max-w-lg w-full text-center shadow-2xl space-y-6"
+            >
+              <div className="mx-auto w-16 h-16 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 text-3xl animate-pulse">
+                🛡️
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Secure Patient Access Required
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">
+                  Arogya AI is a protected medical system. To ensure HIPAA compliance, secure medical records privacy, and WhatsApp synchronization, guest chatting is disabled on the web portal.
+                </p>
+                <p className="text-sm font-semibold text-teal-600 dark:text-teal-400 mt-2">
+                  Please log in or register your number to start chatting with your AI Health Assistant.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 pt-4">
+                <Link
+                  href="/register"
+                  className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-teal-500/10 hover:shadow-xl transition-all text-center cursor-pointer"
+                >
+                  Register New Account
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="w-full py-3.5 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold rounded-2xl transition-all text-center cursor-pointer"
+                >
+                  Sign In / Log In
+                </Link>
+              </div>
+            </motion.div>
           </div>
         )}
 

@@ -45,7 +45,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             className={`h-12 w-12 rounded-full border-2 transition-all duration-200 ${
               speechRecognition.isListening
                 ? 'bg-red-500 border-red-500 text-white shadow-lg'
-                : 'border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600 hover:scale-105'
+                : 'border-gray-300 text-gray-600 hover:border-teal-400 hover:text-teal-600 hover:scale-105'
             }`}
           >
             <div className={speechRecognition.isListening ? 'animate-pulse' : ''}>
@@ -65,7 +65,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder={speechRecognition.isListening ? t('listening') : t('messagePlaceholder')}
-            className="min-h-[48px] max-h-[120px] resize-none bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-blue-400 focus:ring-blue-400 overflow-hidden"
+            className="min-h-[48px] max-h-[120px] resize-none bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-teal-500 focus:ring-teal-500 overflow-hidden"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -83,7 +83,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
             disabled={!inputMessage.trim() || isLoading}
             size="lg"
             title={t('sendMessage')}
-            className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 text-white shadow-lg disabled:opacity-50 transition-all duration-200"
+            className="h-12 w-12 rounded-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 hover:scale-105 text-white shadow-lg disabled:opacity-50 transition-all duration-200"
           >
             <PaperAirplaneIcon className="h-5 w-5" />
           </Button>

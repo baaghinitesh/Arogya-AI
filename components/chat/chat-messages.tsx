@@ -38,7 +38,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               <div
                 className={`max-w-[85%] sm:max-w-[70%] ${
                   message.role === 'user'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-l-2xl rounded-tr-2xl'
+                    ? 'bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-l-2xl rounded-tr-2xl'
                     : 'bg-white border border-gray-200 text-gray-800 rounded-r-2xl rounded-tl-2xl shadow-sm'
                 } p-4`}
               >
@@ -51,7 +51,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 <div className="flex items-center justify-between mt-2">
                   <p
                     className={`text-xs ${
-                      message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      message.role === 'user' ? 'text-cyan-100' : 'text-gray-500'
                     }`}
                   >
                     {new Date(message.timestamp).toLocaleTimeString()}

@@ -3,16 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import LogoUploader from './logo-uploader';
 
 interface SplashScreenProps {
   onComplete: () => void;
   duration?: number;
 }
 
-const SplashScreen: React.FC<SplashScreenProps> = ({ 
-  onComplete, 
-  duration = 1200 
+const SplashScreen: React.FC<SplashScreenProps> = ({
+  onComplete,
+  duration = 2400,
 }) => {
   const { t } = useTranslation();
   const [showSplash, setShowSplash] = useState(true);
@@ -32,7 +31,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('arogya_splash_shown', 'true');
       }
-      setTimeout(onComplete, 300); // Snappy exit animation
+      setTimeout(onComplete, 500);
     }, duration);
 
     return () => clearTimeout(timer);
@@ -44,174 +43,184 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-cyan-50/70 via-white to-emerald-50/70"
+          exit={{ opacity: 0, scale: 1.03 }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+          style={{
+            background:
+              'linear-gradient(135deg, #ecfeff 0%, #f0fdfa 30%, #f0fdf4 60%, #ecfeff 100%)',
+          }}
         >
-          {/* Background Pattern with Cyan and Emerald Blobs */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-cyan-500 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-32 h-32 bg-emerald-500 rounded-full blur-3xl"></div>
-            <div className="absolute top-3/4 left-1/2 w-24 h-24 bg-teal-500 rounded-full blur-2xl"></div>
-          </div>
+          {/* Animated background orbs */}
+          <motion.div
+            animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-cyan-400 to-teal-300 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+            className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400 to-cyan-300 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-teal-300 to-cyan-300 rounded-full blur-3xl"
+          />
 
-          <div className="relative text-center px-8">
-            {/* Logo Animation */}
+          {/* Grid pattern overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                'linear-gradient(#0891b2 1px, transparent 1px), linear-gradient(90deg, #0891b2 1px, transparent 1px)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+
+          {/* Main content */}
+          <div className="relative flex flex-col items-center text-center px-8 max-w-lg">
+
+            {/* Logo mark */}
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ 
-                duration: 0.6, 
-                type: "spring", 
-                stiffness: 220, 
-                damping: 18 
-              }}
-              className="mb-8 flex justify-center"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.7, type: 'spring', stiffness: 200, damping: 16 }}
+              className="mb-8 relative"
             >
-              <div className="relative">
-                {/* Pulsing Cyan ring */}
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1.2, opacity: 0 }}
-                  transition={{ 
-                    duration: 1.2, 
-                    repeat: Infinity, 
-                    repeatType: "loop" 
-                  }}
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full blur-sm"
-                />
-                
-                {/* Logo container */}
-                <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-full shadow-2xl flex items-center justify-center overflow-hidden">
-                  <LogoUploader size="lg" />
-                  {/* Fallback if no logo */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl"
-                  >
-                    A
-                  </motion.div>
-                </div>
+              {/* Outer glow ring */}
+              <motion.div
+                animate={{ scale: [1, 1.25, 1], opacity: [0.4, 0, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-teal-400 blur-md"
+              />
+              {/* Inner ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                className="absolute -inset-2 rounded-full border-2 border-dashed border-cyan-300/50"
+              />
+
+              {/* Logo circle */}
+              <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 shadow-2xl flex items-center justify-center">
+                {/* Inner shine */}
+                <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/20 to-transparent" />
+                {/* Cross / health symbol */}
+                <svg
+                  className="w-12 h-12 text-white relative z-10"
+                  fill="none"
+                  viewBox="0 0 48 48"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                >
+                  <rect x="18" y="6" width="12" height="36" rx="3" fill="currentColor" stroke="none" />
+                  <rect x="6" y="18" width="36" height="12" rx="3" fill="currentColor" stroke="none" />
+                </svg>
               </div>
             </motion.div>
 
-            {/* Brand Name Animation */}
-            <motion.h1
-              initial={{ y: 20, opacity: 0 }}
+            {/* Brand name */}
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="text-4xl md:text-5xl font-bold mb-4"
+              transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
             >
-              <span className="bg-gradient-to-r from-cyan-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent bg-300% animate-gradient">
-                Arogya AI
-              </span>
-            </motion.h1>
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-1">
+                <span className="bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent animate-gradient">
+                  Arogya
+                </span>
+                <span className="text-slate-700"> AI</span>
+              </h1>
+            </motion.div>
 
-            {/* Tagline Animation */}
+            {/* Tagline */}
             <motion.p
-              initial={{ y: 15, opacity: 0 }}
+              initial={{ y: 16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.4 }}
-              className="text-lg md:text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed"
+              transition={{ delay: 0.5, duration: 0.5, ease: 'easeOut' }}
+              className="mt-3 text-base md:text-lg text-slate-500 font-medium tracking-wide max-w-xs"
             >
-              {t('tagline')}
+              {t('tagline') || 'Your AI-powered health companion'}
             </motion.p>
 
-            {/* Loading Animation (Cyan/Teal/Emerald dots) */}
+            {/* Divider line */}
+            <motion.div
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
+              className="mt-6 w-16 h-0.5 bg-gradient-to-r from-cyan-400 to-teal-400 rounded-full"
+            />
+
+            {/* Loading dots */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.3 }}
-              className="flex justify-center mt-8"
+              transition={{ delay: 0.9, duration: 0.3 }}
+              className="flex items-center space-x-2 mt-8"
             >
-              <div className="flex space-x-2">
-                {[0, 1, 2].map((index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ scale: 0.8, opacity: 0.3 }}
-                    animate={{ 
-                      scale: [0.8, 1.2, 0.8], 
-                      opacity: [0.3, 1, 0.3] 
-                    }}
-                    transition={{
-                      duration: 1.0,
-                      repeat: Infinity,
-                      delay: index * 0.15,
-                      ease: "easeInOut"
-                    }}
-                    className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full"
-                  />
-                ))}
-              </div>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    scaleY: [1, 2.5, 1],
+                    opacity: [0.4, 1, 0.4],
+                  }}
+                  transition={{
+                    duration: 0.9,
+                    repeat: Infinity,
+                    delay: i * 0.12,
+                    ease: 'easeInOut',
+                  }}
+                  className="w-1 h-4 rounded-full bg-gradient-to-b from-cyan-500 to-teal-500"
+                />
+              ))}
             </motion.div>
 
-            {/* Health Icons Animation */}
-            <motion.div
+            {/* Subtle status text */}
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-              className="absolute inset-0 pointer-events-none overflow-hidden"
+              transition={{ delay: 1.1, duration: 0.4 }}
+              className="mt-4 text-xs text-slate-400 tracking-widest uppercase"
             >
-              {/* Floating health icons */}
-              <motion.div
-                animate={{ 
-                  y: [-15, 15, -15],
-                  x: [-8, 8, -8],
-                  rotate: [0, 4, -4, 0]
-                }}
-                transition={{ 
-                  duration: 5, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                }}
-                className="absolute top-1/4 left-1/4 text-cyan-300 opacity-20"
-              >
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                animate={{ 
-                  y: [15, -15, 15],
-                  x: [8, -8, 8],
-                  rotate: [0, -4, 4, 0]
-                }}
-                transition={{ 
-                  duration: 6.5, 
-                  repeat: Infinity, 
-                  ease: "easeInOut",
-                  delay: 0.8
-                }}
-                className="absolute bottom-1/4 right-1/4 text-teal-300 opacity-20"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </motion.div>
-              
-              <motion.div
-                animate={{ 
-                  y: [-12, 12, -12],
-                  x: [-4, 4, -4],
-                  rotate: [0, 2, -2, 0]
-                }}
-                transition={{ 
-                  duration: 5.5, 
-                  repeat: Infinity, 
-                  ease: "easeInOut",
-                  delay: 1.5
-                }}
-                className="absolute top-3/4 left-1/2 text-emerald-300 opacity-20"
-              >
-                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </motion.div>
-            </motion.div>
+              Loading your health assistant…
+            </motion.p>
           </div>
+
+          {/* Floating health icons — decorative */}
+          {[
+            { icon: '❤️', top: '15%', left: '10%', delay: 0.6, size: 'text-2xl' },
+            { icon: '🩺', top: '20%', right: '12%', delay: 0.9, size: 'text-xl' },
+            { icon: '💊', bottom: '20%', left: '8%', delay: 1.1, size: 'text-lg' },
+            { icon: '🌿', bottom: '15%', right: '10%', delay: 0.7, size: 'text-2xl' },
+            { icon: '⚕️', top: '50%', left: '5%', delay: 1.3, size: 'text-xl' },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.35, 0.35, 0],
+                scale: [0, 1, 1, 0.8],
+                y: [0, -12, 12, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                delay: item.delay,
+                ease: 'easeInOut',
+              }}
+              className={`absolute ${item.size} select-none pointer-events-none`}
+              style={{
+                top: item.top,
+                left: (item as any).left,
+                right: (item as any).right,
+                bottom: item.bottom,
+              }}
+            >
+              {item.icon}
+            </motion.div>
+          ))}
         </motion.div>
       )}
     </AnimatePresence>

@@ -87,40 +87,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       observer.observe(node, config);
     });
 
-    // Highly responsive checker to clean dynamic google layouts
-    const interval = setInterval(() => {
-      // Clean banner frames
-      const banners = document.querySelectorAll('.goog-te-banner-frame, iframe.goog-te-banner-frame');
-      banners.forEach(banner => {
-        const el = banner as HTMLElement;
-        el.style.setProperty('display', 'none', 'important');
-        el.style.setProperty('visibility', 'hidden', 'important');
-        el.style.setProperty('height', '0', 'important');
-        el.style.setProperty('width', '0', 'important');
-        el.style.setProperty('opacity', '0', 'important');
-      });
-
-      // Hide general skip translates
-      const skipTranslates = document.querySelectorAll('.skiptranslate');
-      skipTranslates.forEach(skip => {
-        const el = skip as HTMLElement;
-        if (el.tagName.toLowerCase() !== 'body' && el.tagName.toLowerCase() !== 'html') {
-          el.style.setProperty('display', 'none', 'important');
-        }
-      });
-
-      // Keep positions cleanly reset
-      if (document.documentElement.style.top && document.documentElement.style.top !== '0px') {
-        document.documentElement.style.setProperty('top', '0px', 'important');
-      }
-      if (document.body.style.top && document.body.style.top !== '0px') {
-        document.body.style.setProperty('top', '0px', 'important');
-      }
-    }, 150);
-
     return () => {
       observer.disconnect();
-      clearInterval(interval);
     };
   }, []);
 

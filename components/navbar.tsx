@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -12,6 +13,7 @@ import LogoUploader from './logo-uploader';
 
 const Navbar = () => {
   const { t } = useTranslation();
+  const pathname = usePathname();
   const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,6 +26,10 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Hide top navbar on authentication pages
+  const isAuthPage = pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up') || pathname.startsWith('/register');
+  if (isAuthPage) return null;
 
   const navItems = [
     { key: 'home', href: '/' },
@@ -38,10 +44,10 @@ const Navbar = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
         isScrolled 
-          ? 'bg-white/80 backdrop-blur-md shadow-lg' 
-          : 'bg-transparent'
+          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg border-gray-200/60 dark:border-gray-800/80' 
+          : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md border-gray-200/50 dark:border-gray-800/60'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,7 +67,7 @@ const Navbar = () => {
                 key={item.key}
                 href={item.href}
                 prefetch={true}
-                className="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 dark:text-gray-200 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors duration-200 relative group"
               >
                 {item.label ?? t(item.key)}
                 <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-teal-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
@@ -72,19 +78,19 @@ const Navbar = () => {
           {/* Language Dropdown & WhatsApp Button */}
           <div className="hidden md:flex items-center space-x-4">
             <Menu as="div" className="relative">
-              <MenuButton className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/50 backdrop-blur-sm border border-gray-200 hover:bg-white/70 transition-all duration-200">
-                <span className="text-sm font-medium text-gray-800">{currentLanguage.nativeName}</span>
-                <ChevronDownIcon className="w-4 h-4 text-gray-600" />
+              <MenuButton className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200">
+                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{currentLanguage.nativeName}</span>
+                <ChevronDownIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-48 bg-white backdrop-blur-md rounded-lg shadow-lg border border-gray-200 py-1">
+              <MenuItems className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-850 backdrop-blur-md rounded-lg shadow-lg border border-gray-200 dark:border-gray-750 py-1">
                 {supportedLanguages.map((language) => (
                   <MenuItem key={language.code}>
                     {({ active }) => (
                       <button
                         onClick={() => changeLanguage(language.code)}
                         className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
-                          active ? 'bg-blue-50 text-blue-700' : 'text-gray-800'
-                        } ${currentLanguage.code === language.code ? 'font-semibold text-blue-700 bg-blue-50' : ''}`}
+                          active ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400' : 'text-gray-800 dark:text-gray-250'
+                        } ${currentLanguage.code === language.code ? 'font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40' : ''}`}
                       >
                         {language.nativeName} ({language.name})
                       </button>
@@ -99,7 +105,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -120,7 +126,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200"
+            className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800"
           >
             <div className="px-4 py-4 space-y-4">
               {navItems.map((item) => (
@@ -128,7 +134,7 @@ const Navbar = () => {
                   key={item.key}
                   href={item.href}
                   prefetch={true}
-                  className="block text-gray-700 hover:text-teal-600 font-medium py-2 transition-colors duration-200"
+                  className="block text-gray-700 dark:text-gray-200 hover:text-teal-600 dark:hover:text-teal-400 font-medium py-2 transition-colors duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {t(item.key)}
@@ -136,8 +142,8 @@ const Navbar = () => {
               ))}
               
               {/* Mobile Language Selector */}
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-sm font-medium text-gray-700 mb-2">Language:</p>
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-350 mb-2">Language:</p>
                 <div className="space-y-2">
                   {supportedLanguages.map((language) => (
                     <button
@@ -148,8 +154,8 @@ const Navbar = () => {
                       }}
                       className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
                         currentLanguage.code === language.code 
-                          ? 'bg-blue-100 text-blue-600 font-semibold' 
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-teal-100 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 font-semibold' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
                     >
                       {language.nativeName} ({language.name})

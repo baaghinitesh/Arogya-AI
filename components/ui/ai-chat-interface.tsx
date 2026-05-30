@@ -21,6 +21,7 @@ interface Message {
 
 interface ChatSession {
   id: string
+  _id?: string
   title: string
   messages: Message[]
   createdAt: Date
@@ -105,7 +106,7 @@ export default function AIChatInterface() {
     stop: stopSpeaking, 
     isSpeaking, 
     isSupported: ttsSupported 
-  } = useSpeechSynthesis()
+  } = useSpeechSynthesis({ language: currentLanguage === 'or' ? 'od' : currentLanguage })
 
   const t = translations[currentLanguage]
 
@@ -269,7 +270,7 @@ export default function AIChatInterface() {
     if (isSpeaking) {
       stopSpeaking()
     } else {
-      speak(text, currentLanguage)
+      speak(text)
     }
   }
 
