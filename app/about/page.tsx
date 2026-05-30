@@ -22,25 +22,25 @@ const AboutPage = () => {
       icon: HeartIcon,
       title: 'Healthcare Focused',
       description: 'Specialized AI trained specifically for healthcare assistance and symptom guidance',
-      color: 'from-red-500 to-pink-500'
+      color: 'from-emerald-500 to-teal-500'
     },
     {
       icon: GlobeAltIcon,
       title: 'Multilingual Support',
-      description: 'Available in English, Hindi, and Odia to serve the diverse population of Odisha',
-      color: 'from-blue-500 to-purple-500'
+      description: 'Available in English, Hindi, and Odia to serve the diverse population of India',
+      color: 'from-cyan-500 to-teal-500'
     },
     {
       icon: ShieldCheckIcon,
       title: 'Privacy & Security',
       description: 'HIPAA-compliant platform ensuring your health information remains secure',
-      color: 'from-green-500 to-blue-500'
+      color: 'from-emerald-500 to-cyan-500'
     },
     {
       icon: UserGroupIcon,
       title: 'Community Driven',
-      description: 'Built specifically for the people of Odisha with local health insights',
-      color: 'from-purple-500 to-indigo-500'
+      description: 'Built specifically for people across India with local health insights',
+      color: 'from-teal-500 to-emerald-500'
     }
   ];
 
@@ -62,7 +62,7 @@ const AboutPage = () => {
       name: 'Rohit Patel',
       role: 'AI Engineer',
       bio: 'PhD in AI/ML. Former researcher at IIT Bhubaneswar.',
-      avatar: 'https://placehold.co/300x300/f3e5f5/7b1fa2?text=RP'
+      avatar: 'https://placehold.co/300x300/e0f7fa/006064?text=RP'
     },
     {
       name: 'Anita Sharma',
@@ -73,7 +73,7 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50/70 via-slate-50 to-emerald-50/70 pt-20">
       {/* Hero Section */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -84,7 +84,7 @@ const AboutPage = () => {
             className="text-center mb-16"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
                 About Arogya AI
               </span>
             </h1>
@@ -121,7 +121,7 @@ const AboutPage = () => {
                 </WhatsAppButton>
               </div>
               <div className="relative">
-                <div className="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-8 flex items-center justify-center">
+                <div className="aspect-square bg-gradient-to-br from-cyan-100 to-teal-100 rounded-2xl p-8 flex items-center justify-center">
                   <Image
                     src="https://placehold.co/400x400/e3f2fd/1976d2?text=Healthcare+AI"
                     alt="Healthcare AI Illustration"
@@ -188,7 +188,7 @@ const AboutPage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12"
+            className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-2xl p-8 md:p-12"
           >
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -258,7 +258,7 @@ const AboutPage = () => {
                     width={96}
                     height={96}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {member.name}

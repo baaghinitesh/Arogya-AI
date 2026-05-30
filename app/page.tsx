@@ -39,12 +39,12 @@ const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50/70 via-slate-50 to-emerald-50/70">
       {/* Hero Section */}
       <section className="relative px-4 pt-24 pb-16 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-32 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute -top-40 -right-32 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-teal-400/20 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-32 w-80 h-80 bg-gradient-to-tr from-green-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
         </div>
 
@@ -58,7 +58,7 @@ const HomePage = () => {
               className="max-w-4xl mx-auto"
             >
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
+                <span className="bg-gradient-to-r from-cyan-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent animate-gradient">
                   {t('heroTitle')}
                 </span>
               </h1>
@@ -130,19 +130,19 @@ const HomePage = () => {
                 icon: ChatBubbleLeftRightIcon,
                 title: t('multilingualTitle'),
                 description: t('multilingualDesc'),
-                color: 'from-blue-500 to-purple-500'
+                color: 'from-cyan-500 to-teal-500'
               },
               {
                 icon: ClockIcon,
                 title: t('instant24Title'),
                 description: t('instant24Desc'),
-                color: 'from-green-500 to-blue-500'
+                color: 'from-emerald-500 to-teal-500'
               },
               {
                 icon: HeartIcon,
                 title: t('personalizedTitle'),
                 description: t('personalizedDesc'),
-                color: 'from-red-500 to-pink-500'
+                color: 'from-teal-500 to-cyan-500'
               }
             ].map((feature, index) => (
               <motion.div
@@ -188,8 +188,8 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-3 gap-8 relative">
             {/* Connection Lines */}
-            <div className="hidden md:block absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-gradient-to-r from-blue-300 to-purple-300 -translate-y-1/2"></div>
-            <div className="hidden md:block absolute top-1/2 right-1/3 w-1/3 h-0.5 bg-gradient-to-r from-purple-300 to-green-300 -translate-y-1/2"></div>
+            <div className="hidden md:block absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-gradient-to-r from-cyan-300 to-teal-300 -translate-y-1/2"></div>
+            <div className="hidden md:block absolute top-1/2 right-1/3 w-1/3 h-0.5 bg-gradient-to-r from-teal-300 to-emerald-300 -translate-y-1/2"></div>
 
             {[
               {
@@ -220,7 +220,7 @@ const HomePage = () => {
                 className="text-center relative"
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                  <div className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
                     <step.icon className="w-10 h-10 text-white" />
                   </div>
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -342,7 +342,7 @@ const HomePage = () => {
                 location: "New Delhi, Delhi, India", 
                 text: "24/7 availability is amazing. Got health guidance in Hindi at 2 AM when my child had fever. Very grateful!",
                 rating: 5,
-                avatar: "https://placehold.co/60x60/f3e5f5/7b1fa2?text=RK"
+                avatar: "https://placehold.co/60x60/e0f7fa/006064?text=RK"
               },
               {
                 name: "Sunita Patel",
@@ -388,7 +388,7 @@ const HomePage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-16 bg-gradient-to-r from-cyan-600 to-teal-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

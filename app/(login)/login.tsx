@@ -157,11 +157,11 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-[#f3f4ff] via-white to-[#fdf2ff] p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-cyan-50/50 via-white to-emerald-50/50 p-4 sm:p-6 md:p-8">
       {/* Background Decorative Rings */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-gradient-to-r from-blue-300/20 to-purple-300/20 blur-3xl" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-gradient-to-r from-purple-300/20 to-pink-300/20 blur-3xl" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-gradient-to-r from-cyan-300/20 to-teal-300/20 blur-3xl" />
+        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-gradient-to-r from-teal-300/20 to-emerald-300/20 blur-3xl" />
       </div>
 
       <motion.div 
@@ -172,10 +172,10 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
       >
         {/* Brand Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20 mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/20 mb-4">
             <ShieldCheckIcon className="w-9 h-9 text-white" />
           </div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 bg-clip-text text-transparent">
             Arogya AI
           </h2>
           <p className="text-gray-500 mt-2 text-sm text-center">
@@ -228,7 +228,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 <Label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                   Mobile Number
                 </Label>
-                <div className="relative flex rounded-2xl border border-gray-200 bg-white/50 focus-within:ring-2 focus-within:ring-purple-500/20 focus-within:border-purple-500 transition-all duration-300">
+                <div className="relative flex rounded-2xl border border-gray-200 bg-white/50 focus-within:ring-2 focus-within:ring-teal-500/20 focus-within:border-teal-500 transition-all duration-300">
                   <div className="flex items-center px-4 border-r border-gray-100 bg-gray-50/50 rounded-l-2xl text-gray-500 text-sm font-semibold">
                     🇮🇳 +91
                   </div>
@@ -250,7 +250,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               <Button
                 type="submit"
                 disabled={loading || phoneNumber.length < 10}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 rounded-2xl font-bold shadow-lg shadow-purple-500/10 hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 text-lg cursor-pointer"
+                className="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white py-6 rounded-2xl font-bold shadow-lg shadow-teal-500/10 hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 text-lg cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -278,7 +278,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 <Label htmlFor="otp" className="block text-sm font-semibold text-gray-700 mb-2">
                   6-Digit OTP Code
                 </Label>
-                <div className="relative rounded-2xl border border-gray-200 bg-white/50 focus-within:ring-2 focus-within:ring-purple-500/20 focus-within:border-purple-500 transition-all duration-300">
+                <div className="relative rounded-2xl border border-gray-200 bg-white/50 focus-within:ring-2 focus-within:ring-teal-500/20 focus-within:border-teal-500 transition-all duration-300">
                   <KeyIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
                     id="otp"
@@ -298,7 +298,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 <button
                   type="button"
                   onClick={() => setStep('phone')}
-                  className="text-gray-500 hover:text-purple-600 transition-colors flex items-center space-x-1 font-medium cursor-pointer"
+                  className="text-gray-500 hover:text-teal-600 transition-colors flex items-center space-x-1 font-medium cursor-pointer"
                 >
                   <ArrowLeftIcon className="w-4 h-4" />
                   <span>Change Number</span>
@@ -306,14 +306,14 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 
                 {timer > 0 ? (
                   <span className="text-gray-400 font-medium">
-                    Resend code in <strong className="text-purple-600 font-bold">{timer}s</strong>
+                    Resend code in <strong className="text-teal-600 font-bold">{timer}s</strong>
                   </span>
                 ) : (
                   <button
                     type="button"
                     onClick={handleResend}
                     disabled={loading}
-                    className="text-purple-600 hover:text-purple-800 font-semibold underline underline-offset-4 cursor-pointer"
+                    className="text-teal-600 hover:text-teal-800 font-semibold underline underline-offset-4 cursor-pointer"
                   >
                     Resend Code
                   </button>
@@ -323,7 +323,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               <Button
                 type="submit"
                 disabled={loading || otp.length < 6}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 rounded-2xl font-bold shadow-lg shadow-purple-500/10 hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 text-lg cursor-pointer"
+                className="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white py-6 rounded-2xl font-bold shadow-lg shadow-teal-500/10 hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 text-lg cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -349,7 +349,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 New to Arogya AI?{' '}
                 <Link 
                   href="/register" 
-                  className="text-purple-600 hover:text-purple-800 font-bold hover:underline transition-all underline-offset-4"
+                  className="text-teal-600 hover:text-teal-800 font-bold hover:underline transition-all underline-offset-4"
                 >
                   Register mobile here
                 </Link>
@@ -357,7 +357,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             ) : (
               <>
                 Having trouble? Contact{' '}
-                <Link href="/contact" className="text-purple-600 font-bold hover:underline transition-all">
+                <Link href="/contact" className="text-teal-600 font-bold hover:underline transition-all">
                   Support Team
                 </Link>
               </>

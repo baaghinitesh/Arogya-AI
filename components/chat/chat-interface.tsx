@@ -349,17 +349,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
         />
 
         {isGuest && (
-          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-indigo-500/10 backdrop-blur-md border-b border-purple-500/10 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm z-10">
-            <div className="flex items-center gap-2 text-purple-800">
+          <div className="bg-gradient-to-r from-cyan-500/10 via-teal-500/10 to-emerald-500/10 backdrop-blur-md border-b border-teal-500/10 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm z-10">
+            <div className="flex items-center gap-2 text-teal-800">
               <span className="text-base">🛡️</span>
               <p className="font-semibold text-center sm:text-left">
-                You are chatting as a <strong className="text-indigo-700">Guest</strong>. Register your number to unlock full access & 24/7 WhatsApp sync!
+                You are chatting as a <strong className="text-teal-700">Guest</strong>. Register your number to unlock full access & 24/7 WhatsApp sync!
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Link
                 href="/register"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+                className="bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold px-4 py-1.5 rounded-full shadow-md text-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 Register Now
               </Link>

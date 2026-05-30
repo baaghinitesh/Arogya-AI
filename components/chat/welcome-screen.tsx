@@ -19,7 +19,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onPromptSelected, current
   return (
     <div className={`flex-1 flex items-center justify-center ${currentTheme.messagesArea}`}>
       <div className="text-center max-w-md mx-auto p-8">
-        <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6">
           <HeartIcon className="w-10 h-10 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Arogya AI</h2>

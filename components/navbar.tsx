@@ -49,7 +49,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <LogoUploader />
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-300">
+            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent group-hover:from-teal-600 group-hover:to-cyan-600 transition-all duration-300">
               Arogya AI
             </span>
           </Link>
@@ -60,6 +60,7 @@ const Navbar = () => {
               <Link
                 key={item.key}
                 href={item.href}
+                prefetch={true}
                 className="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-200 relative group"
               >
                 {item.label ?? t(item.key)}
@@ -126,7 +127,8 @@ const Navbar = () => {
                 <Link
                   key={item.key}
                   href={item.href}
-                  className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+                  prefetch={true}
+                  className="block text-gray-700 hover:text-teal-600 font-medium py-2 transition-colors duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {t(item.key)}

@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4">
         <Button
           onClick={onCreateNewSession}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
+          className="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
           size={isCollapsed ? "sm" : "default"}
           title={isCollapsed ? 'New Chat' : undefined}
         >
@@ -129,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   title={isCollapsed ? session.title : undefined}
                 >
                   {isCollapsed ? (
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center text-white text-sm font-bold">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-400 to-teal-400 flex items-center justify-center text-white text-sm font-bold">
                       {session.title.charAt(0).toUpperCase()}
                     </div>
                   ) : (

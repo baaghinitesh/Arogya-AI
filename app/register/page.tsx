@@ -168,11 +168,11 @@ export default function RegisterPage() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-emerald-50/30 p-4 sm:p-6 md:p-8 pt-24 pb-16 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-cyan-50/50 via-slate-50 to-emerald-50/30 p-4 sm:p-6 md:p-8 pt-24 pb-16 relative overflow-hidden">
       
       {/* Premium Ambient Background Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-br from-indigo-400/10 via-purple-300/10 to-transparent blur-3xl" />
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-br from-cyan-400/10 via-teal-300/10 to-transparent blur-3xl" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-emerald-300/10 via-teal-200/10 to-transparent blur-3xl" />
       </div>
 
@@ -184,7 +184,7 @@ export default function RegisterPage() {
           <div className="hidden sm:flex justify-between items-center relative">
             <div className="absolute left-6 right-6 top-[20px] h-0.5 bg-slate-100 -z-10" />
             <div 
-              className="absolute left-6 top-[20px] h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-500 -z-10" 
+              className="absolute left-6 top-[20px] h-0.5 bg-gradient-to-r from-cyan-600 to-teal-600 transition-all duration-500 -z-10" 
               style={{ width: `${((step - 1) / (stepsDetails.length - 1)) * 88}%` }}
             />
             {stepsDetails.map((stepDetail, index) => {
@@ -198,14 +198,14 @@ export default function RegisterPage() {
                       isCompleted 
                         ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/10' 
                         : isActive 
-                        ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white scale-110 shadow-lg shadow-indigo-500/20 ring-4 ring-indigo-500/10'
+                        ? 'bg-gradient-to-br from-cyan-600 to-teal-600 text-white scale-110 shadow-lg shadow-teal-500/20 ring-4 ring-teal-500/10'
                         : 'bg-white text-slate-400 border border-slate-200'
                     }`}
                   >
                     {isCompleted ? '✓' : index + 1}
                   </div>
                   <span className={`text-[11px] font-bold mt-2 text-center transition-colors duration-300 leading-tight ${
-                    isActive ? 'text-indigo-600 font-extrabold' : isCompleted ? 'text-emerald-600' : 'text-slate-400'
+                    isActive ? 'text-teal-600 font-extrabold' : isCompleted ? 'text-emerald-600' : 'text-slate-400'
                   }`}>
                     {stepDetail.title}
                   </span>
@@ -220,14 +220,14 @@ export default function RegisterPage() {
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                 Step {step} of 4
               </span>
-              <span className="text-sm font-extrabold text-indigo-600 flex items-center gap-1">
-                {step < 4 && React.createElement(stepsDetails[step - 1].icon, { className: "w-4 h-4 text-indigo-500 inline" })}
+              <span className="text-sm font-extrabold text-teal-600 flex items-center gap-1">
+                {step < 4 && React.createElement(stepsDetails[step - 1].icon, { className: "w-4 h-4 text-teal-500 inline" })}
                 {stepsDetails[step - 1].title}
               </span>
             </div>
             <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-500" 
+                className="h-full bg-gradient-to-r from-cyan-600 to-teal-600 rounded-full transition-all duration-500" 
                 style={{ width: `${(step / stepsDetails.length) * 100}%` }}
               />
             </div>
@@ -241,7 +241,7 @@ export default function RegisterPage() {
               <CheckCircle2 className="w-10 h-10 text-white" />
             </div>
           ) : (
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg shadow-indigo-500/10 mx-auto mb-4 relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 rounded-3xl flex items-center justify-center shadow-lg shadow-teal-500/10 mx-auto mb-4 relative">
               <UserPlus className="w-8 h-8 text-white" />
               <Sparkles className="w-4 h-4 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
             </div>
@@ -287,7 +287,7 @@ export default function RegisterPage() {
                 <label htmlFor="phone" className="block text-sm font-bold text-slate-700">
                   Mobile Number
                 </label>
-                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-600 transition-all duration-300 shadow-sm">
+                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600 transition-all duration-300 shadow-sm">
                   {/* Country Code Prefix */}
                   <div className="flex items-center px-4 py-4 border-r border-slate-100 bg-slate-50/50 rounded-l-2xl text-slate-600 font-extrabold select-none">
                     <span className="mr-1">🇮🇳</span> +91
@@ -319,7 +319,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={phoneNumber.length < 10}
-                className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-xl hover:shadow-indigo-600/30 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 text-base cursor-pointer"
+                className="w-full h-14 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-2xl font-bold shadow-lg shadow-teal-600/20 hover:shadow-xl hover:shadow-teal-600/30 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 text-base cursor-pointer"
               >
                 <span>Continue to Profile</span>
                 <ArrowRight className="w-5 h-5" />
@@ -341,7 +341,7 @@ export default function RegisterPage() {
                 <label htmlFor="name" className="block text-sm font-bold text-slate-700">
                   Full Name
                 </label>
-                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-600 transition-all duration-300 shadow-sm">
+                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600 transition-all duration-300 shadow-sm">
                   <User className="absolute left-4 w-5 h-5 text-slate-400 pointer-events-none" />
                   <input
                     id="name"
@@ -362,7 +362,7 @@ export default function RegisterPage() {
                   <label htmlFor="age" className="block text-sm font-bold text-slate-700">
                     Age
                   </label>
-                  <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-600 transition-all duration-300 shadow-sm">
+                  <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600 transition-all duration-300 shadow-sm">
                     <input
                       id="age"
                       type="number"
@@ -392,7 +392,7 @@ export default function RegisterPage() {
                           onClick={() => setGender(opt)}
                           className={`h-14 rounded-2xl font-bold text-sm transition-all duration-300 flex items-center justify-center border capitalize cursor-pointer select-none ${
                             isSelected
-                              ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-md shadow-indigo-600/10 scale-[1.02]'
+                              ? 'bg-gradient-to-br from-cyan-600 to-teal-600 border-transparent text-white shadow-md shadow-teal-600/10 scale-[1.02]'
                               : 'bg-white/60 border-slate-200 text-slate-600 hover:bg-slate-50 active:scale-[0.98]'
                           }`}
                         >
@@ -417,7 +417,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={!name.trim() || !age || !gender}
-                  className="flex-1 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-xl disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                  className="flex-1 h-14 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-2xl font-bold shadow-lg shadow-teal-600/20 hover:shadow-xl disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <span>Continue</span>
                   <ArrowRight className="w-5 h-5" />
@@ -440,7 +440,7 @@ export default function RegisterPage() {
                 <label htmlFor="pincode" className="block text-sm font-bold text-slate-700">
                   Indian Pincode (6 Digits)
                 </label>
-                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-600 transition-all duration-300 shadow-sm">
+                <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white/60 focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600 transition-all duration-300 shadow-sm">
                   <MapPin className="absolute left-4 w-5 h-5 text-slate-400 pointer-events-none" />
                   <input
                     id="pincode"
@@ -453,7 +453,7 @@ export default function RegisterPage() {
                     required
                   />
                   {fetchingLocation && (
-                    <Loader2 className="absolute right-4 w-5 h-5 text-indigo-600 animate-spin" />
+                    <Loader2 className="absolute right-4 w-5 h-5 text-teal-600 animate-spin" />
                   )}
                 </div>
                 {/* Location indicator banner */}
@@ -462,10 +462,10 @@ export default function RegisterPage() {
                     <motion.div 
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-indigo-50/50 border border-indigo-100/50 p-3 rounded-2xl flex items-center gap-2"
+                      className="bg-teal-50/50 border border-teal-100/50 p-3 rounded-2xl flex items-center gap-2"
                     >
-                      <span className="text-indigo-600 text-sm">📍</span>
-                      <p className="text-xs text-indigo-900 font-bold leading-normal">
+                      <span className="text-teal-600 text-sm">📍</span>
+                      <p className="text-xs text-teal-900 font-bold leading-normal">
                         {detectedLocation}
                       </p>
                     </motion.div>
@@ -476,7 +476,7 @@ export default function RegisterPage() {
               {/* Native Language Grid Selection */}
               <div className="space-y-2">
                 <span className="block text-sm font-bold text-slate-700 flex items-center gap-1.5">
-                  <Globe className="w-4.5 h-4.5 text-indigo-500" />
+                  <Globe className="w-4.5 h-4.5 text-teal-500" />
                   Preferred Communication Language
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
@@ -489,8 +489,8 @@ export default function RegisterPage() {
                         onClick={() => setLanguage(lang.code)}
                         className={`p-3 rounded-2xl text-center transition-all duration-300 border flex flex-col items-center justify-center min-h-[75px] cursor-pointer select-none ${
                           isSelected
-                            ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-md shadow-indigo-600/10 scale-[1.02]'
-                            : 'bg-white/60 border-slate-200 text-slate-700 hover:border-indigo-300 hover:bg-slate-50'
+                            ? 'bg-gradient-to-br from-cyan-600 to-teal-600 border-transparent text-white shadow-md shadow-teal-600/10 scale-[1.02]'
+                            : 'bg-white/60 border-slate-200 text-slate-700 hover:border-teal-300 hover:bg-slate-50'
                         }`}
                       >
                         <span className="text-base font-extrabold block leading-tight">{lang.native}</span>
@@ -516,7 +516,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading || pincode.length !== 6}
-                  className="flex-1 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-xl disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                  className="flex-1 h-14 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-2xl font-bold shadow-lg shadow-teal-600/20 hover:shadow-xl disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -541,9 +541,9 @@ export default function RegisterPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="space-y-6 text-center"
             >
-              <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100/50 flex flex-col items-center">
-                <Smile className="w-12 h-12 text-indigo-600 mb-3 animate-bounce" />
-                <h3 className="text-xl font-extrabold text-indigo-900">Welcome to Arogya AI, {name}!</h3>
+              <div className="p-6 bg-teal-50/50 rounded-3xl border border-teal-100/50 flex flex-col items-center">
+                <Smile className="w-12 h-12 text-teal-600 mb-3 animate-bounce" />
+                <h3 className="text-xl font-extrabold text-teal-900">Welcome to Arogya AI, {name}!</h3>
                 <p className="text-sm text-slate-600 mt-2 leading-relaxed max-w-sm">
                   Your mobile number <strong className="text-slate-800 font-semibold">{phoneNumber}</strong> is officially registered. You can immediately access our AI-driven diagnosis system.
                 </p>
@@ -553,7 +553,7 @@ export default function RegisterPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link
                   href="/chat"
-                  className="h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-extrabold shadow-md shadow-indigo-600/10 hover:shadow-lg hover:shadow-indigo-600/20 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 text-base cursor-pointer"
+                  className="h-14 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-2xl font-extrabold shadow-md shadow-teal-600/10 hover:shadow-lg hover:shadow-teal-600/20 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 text-base cursor-pointer"
                 >
                   <MessageSquare className="w-5 h-5" />
                   <span>Start Web Chat</span>
@@ -582,7 +582,7 @@ export default function RegisterPage() {
               Already registered?{' '}
               <Link 
                 href="/sign-in" 
-                className="text-indigo-600 hover:text-indigo-800 font-extrabold hover:underline transition-all underline-offset-4"
+                className="text-teal-600 hover:text-teal-800 font-extrabold hover:underline transition-all underline-offset-4"
               >
                 Log in with OTP here
               </Link>

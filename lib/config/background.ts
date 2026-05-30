@@ -12,7 +12,7 @@ export const backgroundThemes: Record<string, BackgroundTheme> = {
   default: {
     name: 'default',
     displayName: 'Default',
-    chatContainer: 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
+    chatContainer: 'bg-gradient-to-br from-cyan-50 via-white to-emerald-50',
     messagesArea: 'bg-gradient-to-b from-gray-50/50 to-white/50',
     inputArea: 'bg-white/90 backdrop-blur-sm',
     sidebar: 'bg-white/80 backdrop-blur-sm'
@@ -20,10 +20,10 @@ export const backgroundThemes: Record<string, BackgroundTheme> = {
   ocean: {
     name: 'ocean',
     displayName: 'Ocean',
-    chatContainer: 'bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100',
-    messagesArea: 'bg-gradient-to-b from-blue-50/50 to-cyan-50/50',
-    inputArea: 'bg-blue-50/90 backdrop-blur-sm',
-    sidebar: 'bg-blue-50/80 backdrop-blur-sm'
+    chatContainer: 'bg-gradient-to-br from-cyan-50 via-sky-50 to-teal-100',
+    messagesArea: 'bg-gradient-to-b from-sky-50/50 to-cyan-50/50',
+    inputArea: 'bg-sky-50/90 backdrop-blur-sm',
+    sidebar: 'bg-sky-50/80 backdrop-blur-sm'
   },
   forest: {
     name: 'forest',
@@ -36,10 +36,10 @@ export const backgroundThemes: Record<string, BackgroundTheme> = {
   sunset: {
     name: 'sunset',
     displayName: 'Sunset',
-    chatContainer: 'bg-gradient-to-br from-orange-50 via-red-50 to-pink-100',
-    messagesArea: 'bg-gradient-to-b from-orange-50/50 to-red-50/50',
-    inputArea: 'bg-orange-50/90 backdrop-blur-sm',
-    sidebar: 'bg-orange-50/80 backdrop-blur-sm'
+    chatContainer: 'bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-100',
+    messagesArea: 'bg-gradient-to-b from-yellow-50/50 to-amber-50/50',
+    inputArea: 'bg-amber-50/90 backdrop-blur-sm',
+    sidebar: 'bg-amber-50/80 backdrop-blur-sm'
   },
   minimal: {
     name: 'minimal',
