@@ -1,38 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db/mongodb';
-import { ChatSession } from '@/lib/types/chat';
-import { ObjectId } from 'mongodb';
+import { ChatSession, Message } from '@/lib/types/chat';
 
-// GET /api/chat/sessions/[sessionId] - Get specific chat session
+// GET /api/chat/sessions/[sessionId] - Get specific chat session and messages from FastAPI
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
     const { sessionId } = await context.params;
-
-    if (!ObjectId.isValid(sessionId)) {
+    const convoId = parseInt(sessionId);
+    
+    if (isNaN(convoId)) {
       return NextResponse.json(
         { error: 'Invalid session ID' },
         { status: 400 }
       );
     }
 
-    const { db } = await connectToDatabase();
-    const session = await db
-      .collection<ChatSession>('chat_sessions')
-      .findOne({ _id: new ObjectId(sessionId), isActive: true });
-
-    if (!session) {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    
+    // Fetch conversation messages from SQLite on the backend
+    const response = await fetch(`${apiBaseUrl}/api/conversation/${convoId}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) {
       return NextResponse.json(
         { error: 'Session not found' },
         { status: 404 }
       );
     }
+    
+    const data = await response.json();
+    
+    // Map backend SQLite messages to frontend Message shape
+    const messages: Message[] = (data.messages || []).map((msg: any, idx: number) => ({
+      _id: idx.toString(),
+      role: msg.role === 'assistant' ? 'ai' : 'user',
+      content: msg.content,
+      timestamp: new Date(),
+    }));
+
+    const session: ChatSession = {
+      _id: sessionId,
+      userId: 'user',
+      title: 'Active Chat',
+      language: 'en',
+      messages,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
+      metadata: {
+        totalMessages: messages.length,
+        lastActivity: new Date(),
+      }
+    };
 
     return NextResponse.json({ session });
   } catch (error) {
-    console.error('Error fetching chat session:', error);
+    console.error('Error fetching chat session from server:', error);
     return NextResponse.json(
       { error: 'Failed to fetch chat session' },
       { status: 500 }
@@ -40,7 +66,7 @@ export async function GET(
   }
 }
 
-// PATCH /api/chat/sessions/[sessionId] - Update chat session
+// PATCH /api/chat/sessions/[sessionId] - Mock update chat session
 export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> }
@@ -49,39 +75,18 @@ export async function PATCH(
     const { sessionId } = await context.params;
     const updates = await request.json();
 
-    if (!ObjectId.isValid(sessionId)) {
-      return NextResponse.json(
-        { error: 'Invalid session ID' },
-        { status: 400 }
-      );
-    }
-
-    const { db } = await connectToDatabase();
-    
-    const updateData = {
-      ...updates,
+    const session: ChatSession = {
+      _id: sessionId,
+      userId: 'user',
+      title: updates.title || 'Updated Chat',
+      language: 'en',
+      messages: [],
+      createdAt: new Date(),
       updatedAt: new Date(),
+      isActive: true,
     };
 
-    const result = await db
-      .collection<ChatSession>('chat_sessions')
-      .updateOne(
-        { _id: new ObjectId(sessionId), isActive: true },
-        { $set: updateData }
-      );
-
-    if (result.matchedCount === 0) {
-      return NextResponse.json(
-        { error: 'Session not found' },
-        { status: 404 }
-      );
-    }
-
-    const updatedSession = await db
-      .collection<ChatSession>('chat_sessions')
-      .findOne({ _id: new ObjectId(sessionId) });
-
-    return NextResponse.json({ session: updatedSession });
+    return NextResponse.json({ session });
   } catch (error) {
     console.error('Error updating chat session:', error);
     return NextResponse.json(
@@ -91,42 +96,12 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/chat/sessions/[sessionId] - Soft delete chat session
+// DELETE /api/chat/sessions/[sessionId] - Mock delete chat session
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const { sessionId } = await context.params;
-
-    if (!ObjectId.isValid(sessionId)) {
-      return NextResponse.json(
-        { error: 'Invalid session ID' },
-        { status: 400 }
-      );
-    }
-
-    const { db } = await connectToDatabase();
-    
-    const result = await db
-      .collection<ChatSession>('chat_sessions')
-      .updateOne(
-        { _id: new ObjectId(sessionId) },
-        { 
-          $set: { 
-            isActive: false,
-            updatedAt: new Date()
-          }
-        }
-      );
-
-    if (result.matchedCount === 0) {
-      return NextResponse.json(
-        { error: 'Session not found' },
-        { status: 404 }
-      );
-    }
-
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting chat session:', error);

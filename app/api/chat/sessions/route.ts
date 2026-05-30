@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db/mongodb';
 import { ChatSession, CreateChatSessionRequest } from '@/lib/types/chat';
-import { ObjectId } from 'mongodb';
-import { nanoid } from 'nanoid';
 
-// GET /api/chat/sessions - Get all chat sessions for a user
+// GET /api/chat/sessions - Get all chat sessions for a user from FastAPI backend
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -17,18 +14,41 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const sessions = await db
-      .collection<ChatSession>('chat_sessions')
-      .find(
-        { userId, isActive: true },
-        { sort: { updatedAt: -1 } }
-      )
-      .toArray();
+    if (userId === 'guest_user') {
+      return NextResponse.json({ sessions: [] });
+    }
+
+    // Clean guest/phone prefixes
+    const phone_number = userId.startsWith('phone_') ? userId.replace('phone_', '') : userId;
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    
+    // Fetch conversations list from FastAPI (backed by SQLite/Redis)
+    const response = await fetch(`${apiBaseUrl}/api/conversations/${phone_number}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`FastAPI responded with status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const conversations = data.conversations || [];
+    
+    // Map backend SQLite conversations to frontend ChatSession objects
+    const sessions: ChatSession[] = conversations.map((convo: any) => ({
+      _id: convo.id.toString(),
+      userId,
+      title: convo.title || 'New Chat',
+      language: 'en',
+      messages: [],
+      createdAt: new Date(convo.updated_at),
+      updatedAt: new Date(convo.updated_at),
+      isActive: true,
+    }));
 
     return NextResponse.json({ sessions });
   } catch (error) {
-    console.error('Error fetching chat sessions:', error);
+    console.error('Error fetching chat sessions from server:', error);
     return NextResponse.json(
       { error: 'Failed to fetch chat sessions' },
       { status: 500 }
@@ -36,11 +56,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/chat/sessions - Create a new chat session
+// POST /api/chat/sessions - Create a new chat session on FastAPI backend
 export async function POST(request: NextRequest) {
   try {
     const body: CreateChatSessionRequest = await request.json();
-    const { userId, language, initialMessage } = body;
+    const { userId, language } = body;
 
     if (!userId || !language) {
       return NextResponse.json(
@@ -49,39 +69,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { db } = await connectToDatabase();
+    const phone_number = userId.startsWith('phone_') ? userId.replace('phone_', '') : userId;
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
     
-    const newSession: Omit<ChatSession, '_id'> = {
+    // Create new conversation in SQLite on the backend
+    const response = await fetch(`${apiBaseUrl}/api/conversation/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        phone_number,
+        title: 'New Chat',
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to create conversation on FastAPI backend: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const convoId = data.conversation_id;
+
+    const session: ChatSession = {
+      _id: convoId.toString(),
       userId,
       title: 'New Chat',
       language,
-      messages: initialMessage ? [{
-        _id: nanoid(),
-        role: 'user',
-        content: initialMessage,
-        timestamp: new Date(),
-      }] : [],
+      messages: [],
       createdAt: new Date(),
       updatedAt: new Date(),
       isActive: true,
       metadata: {
-        totalMessages: initialMessage ? 1 : 0,
+        totalMessages: 0,
         lastActivity: new Date(),
       },
     };
 
-    const result = await db
-      .collection<ChatSession>('chat_sessions')
-      .insertOne(newSession);
-
-    const session = {
-      ...newSession,
-      _id: result.insertedId,
-    };
-
     return NextResponse.json({ session }, { status: 201 });
   } catch (error) {
-    console.error('Error creating chat session:', error);
+    console.error('Error creating chat session on server:', error);
     return NextResponse.json(
       { error: 'Failed to create chat session' },
       { status: 500 }

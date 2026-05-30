@@ -1,34 +1,11 @@
-import { MongoClient, Db } from 'mongodb';
-
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/arogya_ai_chat';
-const dbName = process.env.MONGODB_DB_NAME || 'arogya_ai_chat';
-
-let client: MongoClient;
-let db: Db;
-
+// Mock MongoDB file - Frontend uses SQLite on the backend server instead of direct MongoDB.
 export async function connectToDatabase() {
-  if (db) {
-    return { client, db };
-  }
-
-  try {
-    client = new MongoClient(uri);
-    await client.connect();
-    db = client.db(dbName);
-    
-    console.log('Connected to MongoDB');
-    return { client, db };
-  } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-    throw error;
-  }
+  console.log('MongoDB client disabled: Using FastAPI backend SQLite.');
+  return { client: null, db: null } as any;
 }
 
 export async function disconnectFromDatabase() {
-  if (client) {
-    await client.close();
-    console.log('Disconnected from MongoDB');
-  }
+  return Promise.resolve();
 }
 
-export { db };
+export const db = null as any;
