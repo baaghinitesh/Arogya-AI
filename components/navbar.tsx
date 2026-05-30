@@ -29,7 +29,8 @@ const Navbar = () => {
     { key: 'home', href: '/' },
     { key: 'about', href: '/about' },
     { key: 'chatHere', href: '/chat' },
-    { key: 'contact', href: '/contact' }
+    { key: 'contact', href: '/contact' },
+    { key: 'docs', href: '/docs', label: 'Docs' }
   ];
 
   return (
@@ -59,10 +60,10 @@ const Navbar = () => {
               <Link
                 key={item.key}
                 href={item.href}
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-200 relative group"
               >
-                {t(item.key)}
-                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
+                {item.label ?? t(item.key)}
+                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-teal-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
               </Link>
             ))}
           </div>

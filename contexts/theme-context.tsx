@@ -13,29 +13,29 @@ export interface ThemeColor {
 
 export const themeColors: ThemeColor[] = [
   {
+    name: 'Teal',
+    value: 'teal',
+    primary: '174 72% 40%',
+    primaryForeground: '0 0% 98%'
+  },
+  {
     name: 'Blue',
     value: 'blue',
-    primary: '217 91% 59%', // blue-500 in HSL
+    primary: '217 91% 59%',
     primaryForeground: '0 0% 98%'
   },
   {
     name: 'Green',  
     value: 'green',
-    primary: '142 76% 36%', // green-500 in HSL
+    primary: '142 76% 36%',
     primaryForeground: '0 0% 98%'
   },
   {
     name: 'Orange',
     value: 'orange', 
-    primary: '25 95% 53%', // orange-500 in HSL
+    primary: '25 95% 53%',
     primaryForeground: '0 0% 98%'
   },
-  {
-    name: 'Red',
-    value: 'red',
-    primary: '0 84% 60%', // red-500 in HSL
-    primaryForeground: '0 0% 98%'
-  }
 ];
 
 interface ThemeContextType {
