@@ -1,45 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  PaperAirplaneIcon,
-  StopIcon,
-  MicrophoneIcon,
-  SpeakerWaveIcon,
-  HeartIcon,
-} from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/language-context';
-import {
-  ChatSession,
-  Message,
-  ChatLanguage,
-  SpeechRecognitionState
-} from '@/lib/types/chat';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useChat, ChatProvider } from '@/contexts/chat-context';
 import Sidebar from '@/components/chat/sidebar';
 import ChatHeader from '@/components/chat/chat-header';
 import ChatMessages from '@/components/chat/chat-messages';
 import ChatInput from '@/components/chat/chat-input';
 import WelcomeScreen from '@/components/chat/welcome-screen';
-import { getBackgroundTheme, backgroundThemes } from '@/lib/config/background';
+import { getBackgroundTheme } from '@/lib/config/background';
 
-// Global types for Web Speech API
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
-  }
-}
-
-// Dynamic authenticated user details loaded reactively
-
-
-// Language options for the chat interface
+// Language options
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
@@ -50,337 +23,59 @@ interface ChatInterfaceProps {
   className?: string;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
+const ChatInterfaceInner: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
   const { t } = useTranslation();
   const { currentLanguage, changeLanguage } = useLanguage();
 
-  // State management
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [backgroundTheme, setBackgroundTheme] = useState('default');
-  const [user, setUser] = useState<any>(null);
-  const [isGuest, setIsGuest] = useState(true);
-  const [isAuthLoading, setIsAuthLoading] = useState(true); // Prevents login popup flash on reload
-  
-  // Voice support
-  const [speechRecognition, setSpeechRecognition] = useState<SpeechRecognitionState>({
-    isListening: false,
-    transcript: '',
-    confidence: 0
-  });
+  const {
+    sessions,
+    currentSession,
+    messages,
+    isLoading,
+    isSidebarCollapsed,
+    setIsSidebarCollapsed,
+    searchQuery,
+    setSearchQuery,
+    backgroundTheme,
+    setBackgroundTheme,
+    user,
+    isGuest,
+    isAuthLoading,
+    createNewSession,
+    sendMessage,
+    handleSelectSession,
+    playTextToSpeech
+  } = useChat();
 
-  // Get current background theme
   const currentTheme = getBackgroundTheme(backgroundTheme);
-
-  // Refs
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const recognitionRef = useRef<any | null>(null);
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`;
-    }
-  }, [inputMessage]);
-
-  // Scroll to bottom of messages
+  // Auto-scroll when messages update
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Fetch authenticated user details on mount
-  useEffect(() => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-    fetch('/api/user', { signal: controller.signal })
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        clearTimeout(timeoutId);
-        if (data && data.phone_number) {
-          setUser(data);
-          setIsGuest(false);
-        } else {
-          setIsGuest(true);
-        }
-      })
-      .catch(() => {
-        clearTimeout(timeoutId);
-        setIsGuest(true);
-      })
-      .finally(() => setIsAuthLoading(false));
-
-    return () => controller.abort();
-  }, []);
-
-  // Load chat sessions when user state is initialized
-  useEffect(() => {
-    if (user !== undefined) {
-      loadChatSessions();
-    }
-  }, [user]);
-
-  // Auto-scroll when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Auto-collapse sidebar on mobile
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setIsSidebarCollapsed(true);
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Initialize speech recognition
-  useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      
-      if (recognitionRef.current) {
-        recognitionRef.current.continuous = false;
-        recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = getLanguageCode(currentLanguage.code as ChatLanguage);
-
-        recognitionRef.current.onstart = () => {
-          setSpeechRecognition(prev => ({ ...prev, isListening: true, error: undefined }));
-        };
-
-        recognitionRef.current.onresult = (event: any) => {
-          const result = event.results[event.resultIndex];
-          setSpeechRecognition(prev => ({
-            ...prev,
-            transcript: result[0].transcript,
-            confidence: result[0].confidence
-          }));
-          
-          if (result.isFinal) {
-            setInputMessage(result[0].transcript);
-          }
-        };
-
-        recognitionRef.current.onerror = (event: any) => {
-          setSpeechRecognition(prev => ({
-            ...prev,
-            isListening: false,
-            error: event.error
-          }));
-        };
-
-        recognitionRef.current.onend = () => {
-          setSpeechRecognition(prev => ({ ...prev, isListening: false }));
-        };
-      }
-    }
-
-    return () => {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch (_) {}
-      }
-    };
-  }, [currentLanguage]);
-
-  const getLanguageCode = (lang: ChatLanguage): string => {
-    const codes = {
-      en: 'en-US',
-      hi: 'hi-IN',
-      od: 'or-IN'
-    };
-    return codes[lang] || 'en-US';
-  };
-
-  const loadChatSessions = async () => {
-    const currentUserId = user?.phone_number || 'guest_user';
-    try {
-      const response = await fetch(`/api/chat/sessions?userId=${currentUserId}`);
-      const data = await response.json();
-      if (response.ok) {
-        setSessions(data.sessions);
-      }
-    } catch (error) {
-      console.error('Failed to load chat sessions:', error);
-    }
-  };
-
-  // createNewSession now returns the created session (or null)
-  const createNewSession = async (): Promise<ChatSession | null> => {
-    const currentUserId = user?.phone_number || 'guest_user';
-    try {
-      const response = await fetch('/api/chat/sessions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: currentUserId,
-          language: currentLanguage.code as ChatLanguage,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setCurrentSession(data.session);
-        setMessages([]);
-        setSessions(prev => [data.session, ...prev]);
-        // Auto-collapse sidebar on mobile after creating session
-        if (window.innerWidth < 1024) {
-          setIsSidebarCollapsed(true);
-        }
-        return data.session;
-      }
-    } catch (error) {
-      console.error('Failed to create session:', error);
-    }
-    return null;
-  };
-
-  /**
-   * sendMessage - sends a message.
-   * If `overrideMessage` is provided, it will be used instead of inputMessage.
-   * If `overrideSessionId` is provided, that sessionId will be used (useful after createNewSession()).
-   */
-  const sendMessage = async (overrideMessage?: string, overrideSessionId?: string) => {
-    const messageToSend = (overrideMessage ?? inputMessage).trim();
-    const sessionId = overrideSessionId ?? currentSession?._id;
-    if (!messageToSend || !sessionId || isLoading) return;
-
-    // Clear input only if we're using the normal input (not if caller passed an override message).
-    if (!overrideMessage) setInputMessage('');
-    setIsLoading(true);
-
-    // Add user message immediately (temp)
-    const userMessage: Message = {
-      _id: `temp-${Date.now()}`,
-      role: 'user',
-      content: messageToSend,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, userMessage]);
-
-    const currentUserId = user?.phone_number || 'guest_user';
-    try {
-      const response = await fetch('/api/chat/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sessionId,
-          message: messageToSend,
-          userId: currentUserId,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        // replace temp user message with server userMessage and append aiMessage
-        setMessages(prev => [...prev.slice(0, -1), data.userMessage, data.aiMessage]);
-        
-        // If the backend auto-titled this conversation (first message), update sidebar
-        if (data.updatedTitle && currentSession) {
-          const updatedTitle = data.updatedTitle;
-          setSessions(prev =>
-            prev.map(s =>
-              s._id === currentSession._id ? { ...s, title: updatedTitle } : s
-            )
-          );
-          setCurrentSession(prev => prev ? { ...prev, title: updatedTitle } : prev);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const startVoiceRecognition = () => {
-    if (recognitionRef.current && !speechRecognition.isListening) {
-      recognitionRef.current.start();
-    }
-  };
-
-  const stopVoiceRecognition = () => {
-    if (recognitionRef.current && speechRecognition.isListening) {
-      recognitionRef.current.stop();
-    }
-  };
-
-  const playTextToSpeech = (text: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = getLanguageCode(currentLanguage.code as ChatLanguage);
-      speechSynthesis.speak(utterance);
-    }
-  };
-
-  // Handler for welcome quick prompts: create a session and immediately send the prompt
-  const handleQuickPrompt = async (prompt: string) => {
-    const session = await createNewSession();
-    if (session) {
-      // send using the freshly created session id (avoid race with state update)
-      await sendMessage(prompt, session._id?.toString());
-    }
-  };
-
-  const handleSelectSession = async (session: ChatSession) => {
-    setCurrentSession(session);
-    setMessages([]); // Clear immediately for responsiveness
-    if (window.innerWidth < 1024) {
-      setIsSidebarCollapsed(true);
-    }
-    // Fetch actual messages from the server for this session
-    try {
-      const response = await fetch(`/api/chat/sessions/${session._id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.session) {
-          setMessages(data.session.messages || []);
-          // Also update the title if server has a better one
-          if (data.session.title && data.session.title !== 'Chat') {
-            setCurrentSession(prev => prev ? { ...prev, title: data.session.title } : prev);
-            setSessions(prev =>
-              prev.map(s => s._id === session._id ? { ...s, title: data.session.title } : s)
-            );
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load session messages:', error);
-    }
-  };
-
   return (
-    <div className={`flex h-[calc(100vh-80px)] mt-20 ${currentTheme.chatContainer} ${className}`}>
-      {/* Sidebar */}
-      <Sidebar
-        sessions={sessions}
-        currentSession={currentSession}
-        isCollapsed={isSidebarCollapsed}
-        searchQuery={searchQuery}
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        onCreateNewSession={createNewSession}
-        onSelectSession={handleSelectSession}
-        onSearchChange={setSearchQuery}
-      />
+    <div className={`flex h-[calc(100vh-80px)] mt-20 ${currentTheme.chatContainer} ${className} overflow-hidden font-sans antialiased text-slate-800 dark:text-slate-100 relative`}>
+      {/* Sidebar - listing user conversation sessions */}
+      <Sidebar />
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
+      {/* Mobile Drawer Backdrop Overlay */}
+      {!isSidebarCollapsed && (
+        <div 
+          onClick={() => setIsSidebarCollapsed(true)} 
+          className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-10 lg:hidden cursor-pointer"
+        />
+      )}
+
+      {/* Main Chat Panel */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/40 dark:bg-slate-900/40 backdrop-blur-sm relative">
+        {/* Header - theme controls, language select, profile menu */}
         <ChatHeader
           backgroundTheme={backgroundTheme}
           setBackgroundTheme={setBackgroundTheme}
@@ -390,49 +85,50 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
           currentTheme={currentTheme}
         />
 
-        {/* Show login popup only after auth check is complete and user is confirmed guest */}
+        {/* Secure Guest Access Modal */}
         {!isAuthLoading && isGuest && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-8 max-w-lg w-full text-center shadow-2xl space-y-6"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 max-w-md w-full text-center shadow-2xl space-y-6"
             >
-              <div className="mx-auto w-16 h-16 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 text-3xl animate-pulse">
+              <div className="mx-auto w-16 h-16 rounded-full bg-teal-50 dark:bg-teal-950/30 flex items-center justify-center text-teal-600 dark:text-teal-400 text-3xl animate-pulse">
                 🛡️
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   Secure Patient Access Required
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                   Arogya AI is a protected medical system. To ensure HIPAA compliance, secure medical records privacy, and WhatsApp synchronization, guest chatting is disabled on the web portal.
                 </p>
-                <p className="text-sm font-semibold text-teal-600 dark:text-teal-400 mt-2">
+                <p className="text-xs font-bold text-teal-600 dark:text-teal-400">
                   Please log in or register your number to start chatting with your AI Health Assistant.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 pt-4">
-                <Link
+              <div className="flex flex-col gap-3 pt-2">
+                <a
                   href="/register"
-                  className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-teal-500/10 hover:shadow-xl transition-all text-center cursor-pointer"
+                  className="w-full py-3 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-teal-500/10 hover:shadow-xl transition-all text-center cursor-pointer text-sm"
                 >
                   Register New Account
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/sign-in"
-                  className="w-full py-3.5 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold rounded-2xl transition-all text-center cursor-pointer"
+                  className="w-full py-3 border border-slate-200 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all text-center cursor-pointer text-sm"
                 >
                   Sign In / Log In
-                </Link>
+                </a>
               </div>
             </motion.div>
           </div>
         )}
 
-        {currentSession ? (
-          <>
+        {/* Messaging Area / Welcome Screen */}
+        <div className="flex-1 overflow-y-auto flex flex-col min-h-0 relative">
+          {currentSession ? (
             <ChatMessages
               messages={messages}
               isLoading={isLoading}
@@ -441,25 +137,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
               playTextToSpeech={playTextToSpeech}
               messagesEndRef={messagesEndRef}
             />
-
-            <ChatInput
-              inputRef={inputRef}
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              sendMessage={sendMessage}
-              isLoading={isLoading}
-              speechRecognition={speechRecognition}
-              startVoiceRecognition={startVoiceRecognition}
-              stopVoiceRecognition={stopVoiceRecognition}
-              t={t}
+          ) : (
+            <WelcomeScreen
+              userName={user?.name || ''}
+              onPromptSelected={(prompt) => sendMessage(prompt)}
               currentTheme={currentTheme}
             />
-          </>
-        ) : (
-          <WelcomeScreen onPromptSelected={handleQuickPrompt} currentTheme={currentTheme} />
-        )}
+          )}
+        </div>
+
+        {/* Chat Input Area (Always visible at bottom) */}
+        <ChatInput inputRef={inputRef} />
       </div>
     </div>
+  );
+};
+
+const ChatInterface: React.FC<ChatInterfaceProps> = (props) => {
+  return (
+    <ChatProvider>
+      <ChatInterfaceInner {...props} />
+    </ChatProvider>
   );
 };
 

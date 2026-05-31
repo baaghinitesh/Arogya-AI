@@ -39,6 +39,7 @@ export async function GET(
       role: msg.role === 'assistant' ? 'ai' : 'user',
       content: msg.content,
       timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+      isHistorical: true, // Bypass typewriter animations on load
     }));
 
     const session: ChatSession = {
@@ -68,42 +69,69 @@ export async function GET(
   }
 }
 
-// PATCH /api/chat/sessions/[sessionId] - Mock update chat session
+// PATCH /api/chat/sessions/[sessionId] - Update chat session title
 export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
     const { sessionId } = await context.params;
+    const convoId = parseInt(sessionId);
+    if (isNaN(convoId)) {
+      return NextResponse.json(
+        { error: 'Invalid session ID' },
+        { status: 400 }
+      );
+    }
+
     const updates = await request.json();
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
-    const session: ChatSession = {
-      _id: sessionId,
-      userId: 'user',
-      title: updates.title || 'Updated Chat',
-      language: 'en',
-      messages: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isActive: true,
-    };
+    const response = await fetch(`${apiBaseUrl}/api/conversation/${convoId}/title`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: updates.title }),
+    });
 
-    return NextResponse.json({ session });
+    if (!response.ok) {
+      throw new Error(`FastAPI responded with status: ${response.status}`);
+    }
+
+    return NextResponse.json({ success: true, title: updates.title });
   } catch (error) {
-    console.error('Error updating chat session:', error);
+    console.error('Error updating chat session title:', error);
     return NextResponse.json(
-      { error: 'Failed to update chat session' },
+      { error: 'Failed to update chat session title' },
       { status: 500 }
     );
   }
 }
 
-// DELETE /api/chat/sessions/[sessionId] - Mock delete chat session
+// DELETE /api/chat/sessions/[sessionId] - Delete chat session
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> }
 ) {
   try {
+    const { sessionId } = await context.params;
+    const convoId = parseInt(sessionId);
+    if (isNaN(convoId)) {
+      return NextResponse.json(
+        { error: 'Invalid session ID' },
+        { status: 400 }
+      );
+    }
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+
+    const response = await fetch(`${apiBaseUrl}/api/conversation/${convoId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`FastAPI responded with status: ${response.status}`);
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting chat session:', error);
