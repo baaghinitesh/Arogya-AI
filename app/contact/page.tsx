@@ -172,7 +172,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-teal-950/20 text-gray-900 dark:text-gray-100 transition-colors duration-300 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <motion.div
@@ -181,12 +181,12 @@ const ContactPage = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {t('contactTitle')}
             </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
             Have questions about Arogya AI? We're here to help. Reach out to us and we'll get back to you as soon as possible.
           </p>
         </motion.div>
@@ -200,8 +200,8 @@ const ContactPage = () => {
             className="space-y-8"
           >
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-              <p className="text-gray-600 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Get in Touch</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-8">
                 We're committed to providing the best healthcare assistance to the people of Odisha. 
                 Your feedback and questions help us improve our services.
               </p>
@@ -214,9 +214,9 @@ const ContactPage = () => {
                   <EnvelopeIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Email</h3>
-                  <p className="text-gray-600">support@arogyaai.com</p>
-                  <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email</h3>
+                  <p className="text-gray-600 dark:text-gray-300">support@arogyaai.com</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">We'll respond within 24 hours</p>
                 </div>
               </div>
 
@@ -225,9 +225,9 @@ const ContactPage = () => {
                   <PhoneIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">WhatsApp Support</h3>
-                  <p className="text-gray-600">+91 98765 43210</p>
-                  <p className="text-sm text-gray-500">Available 24/7 for health assistance</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">WhatsApp Support</h3>
+                  <p className="text-gray-600 dark:text-gray-300">+91 98765 43210</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Available 24/7 for health assistance</p>
                 </div>
               </div>
 
@@ -236,19 +236,19 @@ const ContactPage = () => {
                   <MapPinIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-                  <p className="text-gray-600">Bhubaneswar, Odisha, India</p>
-                  <p className="text-sm text-gray-500">Serving all of Odisha</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Location</h3>
+                  <p className="text-gray-600 dark:text-gray-300">Bhubaneswar, Odisha, India</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Serving all of Odisha</p>
                 </div>
               </div>
             </div>
 
             {/* WhatsApp CTA */}
-            <div className="bg-green-50 rounded-2xl p-6 border border-green-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <div className="bg-green-50/50 dark:bg-green-950/10 border border-green-200/50 dark:border-green-900/20 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                 Prefer WhatsApp? 
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Get instant responses to your health questions through WhatsApp.
               </p>
               <WhatsAppButton 
@@ -265,7 +265,7 @@ const ContactPage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-white rounded-2xl shadow-xl p-8"
+            className="bg-white dark:bg-slate-900/60 border border-transparent dark:border-slate-800 rounded-2xl shadow-xl p-8"
           >
             {/* Success/Error Messages */}
             {submitStatus === 'success' && (
@@ -299,7 +299,7 @@ const ContactPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   {t('nameLabel')} *
                 </label>
                 <input
@@ -308,8 +308,8 @@ const ContactPage = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
-                    errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-lg bg-transparent text-gray-800 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
+                    errors.name ? 'border-red-300 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300' : 'border-gray-300 dark:border-slate-700'
                   }`}
                   placeholder="Your full name"
                 />
@@ -320,7 +320,7 @@ const ContactPage = () => {
 
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   {t('emailLabel')} *
                 </label>
                 <input
@@ -329,8 +329,8 @@ const ContactPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
-                    errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-lg bg-transparent text-gray-800 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
+                    errors.email ? 'border-red-300 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300' : 'border-gray-300 dark:border-slate-700'
                   }`}
                   placeholder="your.email@example.com"
                 />
@@ -341,7 +341,7 @@ const ContactPage = () => {
 
               {/* Subject Field */}
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="subject" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   Subject
                 </label>
                 <input
@@ -350,14 +350,14 @@ const ContactPage = () => {
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 bg-transparent text-gray-800 dark:text-white placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   placeholder="What is this regarding?"
                 />
               </div>
 
               {/* Message Field */}
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   {t('messageLabel')} *
                 </label>
                 <textarea
@@ -366,8 +366,8 @@ const ContactPage = () => {
                   rows={5}
                   value={formData.message}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-vertical ${
-                    errors.message ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-lg bg-transparent text-gray-800 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-y ${
+                    errors.message ? 'border-red-300 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300' : 'border-gray-300 dark:border-slate-700'
                   }`}
                   placeholder="Tell us how we can help you..."
                 />
@@ -378,16 +378,16 @@ const ContactPage = () => {
 
               {/* File Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   {t('fileUploadLabel')}
                 </label>
                 <div
                   className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
                     dragActive 
-                      ? 'border-blue-500 bg-blue-50' 
+                      ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20' 
                       : errors.file
-                        ? 'border-red-300 bg-red-50'
-                        : 'border-gray-300 hover:border-gray-400'
+                        ? 'border-red-300 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300'
+                        : 'border-gray-300 dark:border-slate-700 hover:border-gray-400 dark:hover:border-slate-500'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -399,8 +399,8 @@ const ContactPage = () => {
                       <div className="flex items-center space-x-3">
                         <PaperClipIcon className="w-6 h-6 text-gray-400" />
                         <div className="text-left">
-                          <p className="text-sm font-medium text-gray-900">{formData.file.name}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{formData.file.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {(formData.file.size / 1024 / 1024).toFixed(2)} MB
                           </p>
                         </div>
@@ -416,13 +416,13 @@ const ContactPage = () => {
                   ) : (
                     <div>
                       <PaperClipIcon className="mx-auto h-8 w-8 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">
-                        <span className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        <span className="font-semibold text-blue-600 dark:text-cyan-400 hover:text-blue-500 cursor-pointer">
                           Click to upload
                         </span>
                         {' '}or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Images, PDF, Word documents up to 10MB
                       </p>
                     </div>

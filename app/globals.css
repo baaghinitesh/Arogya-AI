@@ -205,3 +205,65 @@ html, body {
 #google_translate_element {
   display: none !important;
 }
+
+/* ── Global Technical Documentation Typography Sync ── */
+.docs-content p {
+  @apply text-gray-600 dark:text-slate-300 leading-relaxed mb-5;
+}
+.docs-content strong {
+  @apply text-gray-900 dark:text-white font-semibold;
+}
+.docs-content code:not(pre code) {
+  @apply bg-gray-100/70 dark:bg-slate-800 text-gray-800 dark:text-slate-200 border border-gray-200/50 dark:border-slate-700/50 px-1.5 py-0.5 rounded font-mono text-[0.82em];
+}
+.docs-content a:not(.group) {
+  @apply text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline transition-colors font-medium;
+}
+.docs-content li {
+  @apply text-gray-600 dark:text-slate-300 leading-relaxed mb-1.5;
+}
+.docs-content ul {
+  @apply list-disc list-inside space-y-1 mb-5 pl-2;
+}
+.docs-content ol {
+  @apply list-decimal list-inside space-y-1 mb-5 pl-2;
+}
+
+/* ── Generic Element Override Sync for Docs Subpages ── */
+.dark .docs-content .bg-white {
+  background-color: #0f172a !important; /* slate-900 */
+}
+.dark .docs-content .bg-gray-50 {
+  background-color: #020617 !important; /* slate-950 */
+}
+.dark .docs-content .bg-gray-100 {
+  background-color: #1e293b !important; /* slate-800 */
+}
+.dark .docs-content .border-gray-200 {
+  border-color: #1e293b !important; /* slate-800 */
+}
+.dark .docs-content .border-gray-100 {
+  border-color: rgba(30, 41, 59, 0.6) !important; /* slate-800/60 */
+}
+.dark .docs-content .text-gray-900 {
+  color: #ffffff !important;
+}
+.dark .docs-content .text-gray-755, .dark .docs-content .text-gray-700 {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+.dark .docs-content .text-gray-600 {
+  color: #cbd5e1 !important; /* slate-300 */
+}
+.dark .docs-content .text-gray-500 {
+  color: #94a3b8 !important; /* slate-400 */
+}
+.dark .docs-content .text-teal-600 {
+  color: #2dd4bf !important; /* teal-400 */
+}
+.dark .docs-content .text-blue-600 {
+  color: #60a5fa !important; /* blue-400 */
+}
+.dark .docs-content a.group:hover {
+  border-color: rgba(13, 148, 136, 0.8) !important;
+}
+

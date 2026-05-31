@@ -240,7 +240,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Select session and fetch SQLite messages
-  const handleSelectSession = async (session: ChatSession) => {
+  const handleSelectSession = useCallback(async (session: ChatSession) => {
     setCurrentSession(session);
     setMessages([]); // Responsive instant clean
     if (typeof window !== 'undefined') {
@@ -268,7 +268,16 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Failed to load session messages:', error);
     }
-  };
+  }, []);
+
+  // Clean up any speaking voices when unmounting
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try { speechSynthesis.cancel(); } catch (_) {}
+      }
+    };
+  }, []);
 
   // Rename session title inside SQLite and state array
   const renameSession = async (sessionId: string, newTitle: string) => {

@@ -31,7 +31,8 @@ export async function getUser() {
       .select()
       .from(users)
       .where(and(eq(users.id, Number(sessionData.user.id)), isNull(users.deletedAt)))
-      .limit(1);
+      .limit(1)
+      .catch(() => null); // Synchronous fallback to prevent unhandled rejections if PostgreSQL is down/slow
 
     const timeout = new Promise<null>((resolve) =>
       setTimeout(() => resolve(null), 3000)
@@ -50,26 +51,31 @@ export async function getUser() {
 }
 
 export async function getActivityLogs() {
-  const user = await getUser();
-  if (!user) {
-    throw new Error('User not authenticated');
+  try {
+    const user = await getUser();
+    if (!user) {
+      return [];
+    }
+
+    // Safe cast for phone-based session IDs
+    const userId = typeof user.id === 'string' ? 0 : user.id;
+
+    return await db
+      .select({
+        id: activityLogs.id,
+        action: activityLogs.action,
+        timestamp: activityLogs.timestamp,
+        ipAddress: activityLogs.ipAddress,
+        metadata: activityLogs.metadata,
+        userName: users.name
+      })
+      .from(activityLogs)
+      .leftJoin(users, eq(activityLogs.userId, users.id))
+      .where(eq(activityLogs.userId, userId))
+      .orderBy(desc(activityLogs.timestamp))
+      .limit(10);
+  } catch (error) {
+    console.error('Failed to get activity logs securely:', error);
+    return [];
   }
-
-  // Safe cast for phone-based session IDs
-  const userId = typeof user.id === 'string' ? 0 : user.id;
-
-  return await db
-    .select({
-      id: activityLogs.id,
-      action: activityLogs.action,
-      timestamp: activityLogs.timestamp,
-      ipAddress: activityLogs.ipAddress,
-      metadata: activityLogs.metadata,
-      userName: users.name
-    })
-    .from(activityLogs)
-    .leftJoin(users, eq(activityLogs.userId, users.id))
-    .where(eq(activityLogs.userId, userId))
-    .orderBy(desc(activityLogs.timestamp))
-    .limit(10);
 }

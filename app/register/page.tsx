@@ -28,11 +28,11 @@ const languagesList = [
 ];
 
 const FIELD =
-  'w-full h-11 bg-transparent pl-10 pr-4 rounded-xl text-slate-800 text-sm font-semibold ' +
-  'placeholder:text-slate-400 placeholder:font-normal focus:outline-none';
+  'w-full h-11 bg-transparent pl-10 pr-4 rounded-xl text-slate-800 dark:text-slate-100 text-sm font-semibold ' +
+  'placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none';
 
 const WRAPPER =
-  'relative flex items-center rounded-xl border border-slate-200 bg-white ' +
+  'relative flex items-center rounded-xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 ' +
   'focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-500 ' +
   'transition-all duration-300 shadow-sm';
 
@@ -42,7 +42,7 @@ const BTN_PRIMARY =
   'disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2 text-sm cursor-pointer';
 
 const BTN_BACK =
-  'flex-1 h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold ' +
+  'flex-1 h-11 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold ' +
   'transition-all flex items-center justify-center gap-2 text-sm cursor-pointer';
 
 export default function RegisterPage() {
@@ -116,10 +116,10 @@ export default function RegisterPage() {
   ];
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-gradient-to-tr from-slate-50 via-cyan-50/30 to-teal-50/30">
+    <div className="h-screen w-screen overflow-hidden flex bg-gradient-to-tr from-slate-50 via-cyan-50/30 to-teal-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-teal-950/20 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
       {/* ── Left panel (desktop only) ── */}
-      <div className="hidden lg:flex w-[42%] shrink-0 bg-gradient-to-br from-cyan-50 via-teal-50/60 to-emerald-50/40 border-r border-slate-200/70 flex-col justify-between p-10 xl:p-14 relative overflow-hidden select-none">
+      <div className="hidden lg:flex w-[42%] shrink-0 bg-gradient-to-br from-cyan-50 via-teal-50/60 to-emerald-50/40 dark:from-slate-900 dark:via-teal-950/40 dark:to-emerald-950/30 border-r border-slate-200/70 dark:border-slate-800 flex-col justify-between p-10 xl:p-14 relative overflow-hidden select-none">
         <div className="absolute top-1/4 -left-24 w-72 h-72 rounded-full bg-gradient-to-r from-cyan-200/30 to-teal-200/30 blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 -right-24 w-72 h-72 rounded-full bg-gradient-to-r from-emerald-200/20 to-cyan-200/20 blur-3xl pointer-events-none" />
 
@@ -135,17 +135,17 @@ export default function RegisterPage() {
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
             src="/login_banner.png" alt="Arogya AI Health Illustration"
-            className="w-full max-w-[300px] xl:max-w-[340px] h-auto object-contain rounded-3xl shadow-xl shadow-teal-500/10 bg-white p-4 border border-slate-100"
+            className="w-full max-w-[300px] xl:max-w-[340px] h-auto object-contain rounded-3xl shadow-xl shadow-teal-500/10 dark:shadow-teal-950/25 bg-white dark:bg-slate-900 p-4 border border-slate-100 dark:border-slate-850"
           />
           <div className="text-center max-w-xs space-y-2">
-            <h3 className="text-xl xl:text-2xl font-extrabold text-slate-800 leading-tight">Create Your Arogya Account</h3>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <h3 className="text-xl xl:text-2xl font-extrabold text-slate-800 dark:text-white leading-tight">Create Your Arogya Account</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-450 leading-relaxed">
               Verify your mobile number to set up a clinical-grade profile. Enable secure symptom analysis and get personalized local health tips.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-4 relative z-10 border-t border-slate-200/70 pt-5 text-xs text-slate-400 font-semibold flex-wrap">
+        <div className="flex items-center justify-center gap-4 relative z-10 border-t border-slate-200/70 dark:border-slate-800 pt-5 text-xs text-slate-450 dark:text-slate-500 font-semibold flex-wrap">
           <span>🔒 HIPAA Compliant</span><span>•</span><span>🛡️ Data Encrypted</span><span>•</span><span>🇮🇳 Made for India</span>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function RegisterPage() {
         {/* Back button */}
         <div className="shrink-0 px-4 sm:px-8 pt-4 sm:pt-5 flex items-center">
           <Link href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:shadow-sm transition-all font-semibold text-sm">
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:border-teal-300 dark:hover:border-teal-800 hover:shadow-sm transition-all font-semibold text-sm">
             <ArrowLeft className="w-4 h-4" />
             <span>{t('backToHome', 'Back to Home')}</span>
           </Link>
@@ -171,7 +171,7 @@ export default function RegisterPage() {
 
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
-            className="w-full max-w-md bg-white rounded-3xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(13,148,136,0.08)] border border-slate-200/60 relative z-10 my-auto"
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(13,148,136,0.08)] dark:shadow-[0_20px_60px_rgba(13,148,136,0.15)] border border-slate-200/60 dark:border-slate-800 relative z-10 my-auto"
           >
             {/* Mobile logo */}
             <div className="flex flex-col items-center lg:hidden mb-4">
@@ -186,7 +186,7 @@ export default function RegisterPage() {
               {/* Desktop stepper */}
               <div className="hidden sm:block">
                 <div className="relative flex items-start justify-between">
-                  <div className="absolute top-4 left-4 right-4 h-0.5 bg-slate-100 rounded-full" />
+                  <div className="absolute top-4 left-4 right-4 h-0.5 bg-slate-100 dark:bg-slate-800 rounded-full" />
                   <div
                     className="absolute top-4 left-4 h-0.5 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full transition-all duration-500 ease-in-out"
                     style={{ width: step === 1 ? '0%' : `calc(${((step - 1) / (steps.length - 1)) * 100}% - 8px)` }}
@@ -199,7 +199,7 @@ export default function RegisterPage() {
                         <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                           done ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md'
                             : active ? 'bg-gradient-to-br from-cyan-600 to-teal-600 text-white shadow-md ring-4 ring-teal-500/15 scale-110'
-                            : 'bg-white text-slate-400 border-2 border-slate-200'
+                            : 'bg-white dark:bg-slate-900 text-slate-450 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-800'
                         }`}>
                           {done ? (
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -208,7 +208,7 @@ export default function RegisterPage() {
                           ) : <span>{i + 1}</span>}
                         </div>
                         <span className={`mt-1.5 text-[10px] font-bold text-center leading-tight px-0.5 ${
-                          active ? 'text-teal-600' : done ? 'text-emerald-600' : 'text-slate-400'
+                          active ? 'text-teal-600 dark:text-teal-400' : done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-450 dark:text-slate-500'
                         }`}>{s.title}</span>
                       </div>
                     );
@@ -227,7 +227,7 @@ export default function RegisterPage() {
                         <div key={i} className={`rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
                           active ? 'w-7 h-7 bg-gradient-to-br from-cyan-600 to-teal-600 text-white text-xs ring-2 ring-teal-500/20 scale-110'
                             : done ? 'w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-500 text-white text-xs'
-                            : 'w-6 h-6 bg-slate-100 text-slate-400 text-xs'
+                            : 'w-6 h-6 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 text-xs'
                         }`}>
                           {done ? (
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -241,7 +241,7 @@ export default function RegisterPage() {
                   <span className="text-xs font-extrabold text-teal-600">{steps[step - 1].title}</span>
                 </div>
                 {/* Single clean progress bar — no overflow issues */}
-                <div className="w-full h-1.5 bg-slate-100 rounded-full">
+                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <div
                     className="h-1.5 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full transition-all duration-500"
                     style={{ width: `${(step / steps.length) * 100}%` }}
@@ -262,10 +262,10 @@ export default function RegisterPage() {
                   <Sparkles className="w-3 h-3 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
                 </div>
               )}
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 {step === 4 ? t('registrationComplete', 'Registration Complete!') : t('registerTitle', 'Register for Arogya AI')}
               </h2>
-              <p className="text-slate-500 mt-1 text-xs max-w-xs mx-auto leading-relaxed">
+              <p className="text-slate-500 dark:text-slate-400 mt-1 text-xs max-w-xs mx-auto leading-relaxed">
                 {step === 1 && t('step1Hint', 'Validate your phone number to access our WhatsApp and Web chatbot.')}
                 {step === 2 && t('step2Hint', 'Help the AI know you better for accurate health recommendations.')}
                 {step === 3 && t('step3Hint', 'Enter your pincode for local health alerts and pick your language.')}
@@ -277,7 +277,7 @@ export default function RegisterPage() {
             <AnimatePresence>
               {error && (
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                  className="bg-rose-50 border border-rose-100 p-3 rounded-xl text-rose-700 text-xs mb-4 flex items-start gap-2">
+                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-xl text-rose-700 dark:text-rose-300 text-xs mb-4 flex items-start gap-2">
                   <span className="select-none">⚠️</span>
                   <span className="font-semibold">{error}</span>
                 </motion.div>
@@ -292,9 +292,9 @@ export default function RegisterPage() {
                 <motion.form key="s1" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
                   onSubmit={handleNext} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="phone" className="block text-xs font-bold text-slate-700">{t('mobileNumber', 'Mobile Number')}</label>
+                    <label htmlFor="phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300">{t('mobileNumber', 'Mobile Number')}</label>
                     <div className={WRAPPER}>
-                      <div className="flex items-center px-3 border-r border-slate-100 bg-slate-50 rounded-l-xl text-slate-600 font-extrabold select-none shrink-0 text-xs h-11">
+                      <div className="flex items-center px-3 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-l-xl text-slate-600 dark:text-slate-400 font-extrabold select-none shrink-0 text-xs h-11">
                         🇮🇳 +91
                       </div>
                       <div className="relative flex-1">
@@ -306,10 +306,10 @@ export default function RegisterPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 flex items-start gap-2">
+                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl p-3 flex items-start gap-2">
                     <span className="text-base select-none">💡</span>
-                    <p className="text-xs text-amber-800 leading-relaxed font-semibold">
-                      {t('devTip', 'Testing? Use verification code')} <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-amber-900">123456</code> {t('devTipSuffix', 'at login.')}
+                    <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed font-semibold">
+                      {t('devTip', 'Testing? Use verification code')} <code className="bg-amber-100 dark:bg-slate-900 px-1 py-0.5 rounded font-mono text-amber-900 dark:text-amber-200">123456</code> {t('devTipSuffix', 'at login.')}
                     </p>
                   </div>
                   <button type="submit" disabled={phoneNumber.length < 10} className={BTN_PRIMARY + ' w-full'}>
@@ -324,7 +324,7 @@ export default function RegisterPage() {
                 <motion.form key="s2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
                   onSubmit={handleNext} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="name" className="block text-xs font-bold text-slate-700">{t('fullName', 'Full Name')}</label>
+                    <label htmlFor="name" className="block text-xs font-bold text-slate-700 dark:text-slate-300">{t('fullName', 'Full Name')}</label>
                     <div className={`${WRAPPER} relative`}>
                       <User className="absolute left-3 w-4 h-4 text-slate-400 pointer-events-none" />
                       <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}
@@ -333,24 +333,24 @@ export default function RegisterPage() {
                   </div>
                   <div className="grid grid-cols-5 gap-3">
                     <div className="col-span-2 space-y-1.5">
-                      <label htmlFor="age" className="block text-xs font-bold text-slate-700">{t('age', 'Age')}</label>
+                      <label htmlFor="age" className="block text-xs font-bold text-slate-700 dark:text-slate-300">{t('age', 'Age')}</label>
                       <div className={WRAPPER}>
                         <input id="age" type="number" min={1} max={120} value={age}
                           onChange={(e) => setAge(e.target.value)}
                           placeholder="Age"
-                          className="w-full h-11 bg-transparent px-3 rounded-xl text-slate-800 text-sm font-semibold placeholder:text-slate-400 focus:outline-none"
+                          className="w-full h-11 bg-transparent px-3 rounded-xl text-slate-800 dark:text-slate-100 text-sm font-semibold placeholder:text-slate-400 focus:outline-none"
                           required />
                       </div>
                     </div>
                     <div className="col-span-3 space-y-1.5">
-                      <span className="block text-xs font-bold text-slate-700">{t('gender', 'Gender')}</span>
+                      <span className="block text-xs font-bold text-slate-700 dark:text-slate-300">{t('gender', 'Gender')}</span>
                       <div className="grid grid-cols-3 gap-1.5">
                         {(['male', 'female', 'other'] as const).map((opt) => (
                           <button key={opt} type="button" onClick={() => setGender(opt)}
                             className={`h-11 rounded-xl font-bold text-xs transition-all duration-200 flex items-center justify-center border capitalize cursor-pointer select-none ${
                               gender === opt
                                 ? 'bg-gradient-to-br from-cyan-600 to-teal-600 border-transparent text-white shadow-sm scale-[1.02]'
-                                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                             }`}>
                             {t(opt, opt)}
                           </button>
@@ -374,7 +374,7 @@ export default function RegisterPage() {
                 <motion.form key="s3" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
                   onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="pincode" className="block text-xs font-bold text-slate-700">
+                    <label htmlFor="pincode" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       {t('pincode', 'Indian Pincode (6 Digits)')}
                     </label>
                     <div className={`${WRAPPER} relative`}>
@@ -387,7 +387,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
                       <Globe className="w-3.5 h-3.5 text-teal-500" />
                       {t('preferredLanguage', 'Preferred Language')}
                     </span>
@@ -399,10 +399,10 @@ export default function RegisterPage() {
                             className={`p-2 rounded-xl text-center transition-all duration-200 border flex flex-col items-center justify-center min-h-[56px] cursor-pointer select-none ${
                               sel
                                 ? 'bg-gradient-to-br from-cyan-600 to-teal-600 border-transparent text-white shadow-sm scale-[1.02]'
-                                : 'bg-white border-slate-200 text-slate-700 hover:border-teal-300 hover:bg-slate-50'
+                                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-teal-300 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                             }`}>
                             <span className="text-sm font-extrabold block leading-tight">{lang.native}</span>
-                            <span className={`text-[9px] mt-0.5 block ${sel ? 'text-white/80' : 'text-slate-400 font-semibold'}`}>
+                            <span className={`text-[9px] mt-0.5 block ${sel ? 'text-white/80' : 'text-slate-400 dark:text-slate-500 font-semibold'}`}>
                               {lang.name}
                             </span>
                           </button>
@@ -430,13 +430,13 @@ export default function RegisterPage() {
               {step === 4 && (
                 <motion.div key="s4" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
                   className="space-y-4 text-center">
-                  <div className="p-5 bg-teal-50 rounded-2xl border border-teal-100 flex flex-col items-center">
-                    <Smile className="w-10 h-10 text-teal-600 mb-2 animate-bounce" />
-                    <h3 className="text-lg font-extrabold text-teal-900">
+                  <div className="p-5 bg-teal-50 dark:bg-teal-950/20 rounded-2xl border border-teal-100 dark:border-teal-900/30 flex flex-col items-center">
+                    <Smile className="w-10 h-10 text-teal-600 dark:text-teal-450 mb-2 animate-bounce" />
+                    <h3 className="text-lg font-extrabold text-teal-900 dark:text-teal-400">
                       {t('welcomeUser', 'Welcome to Arogya AI')}, {name}!
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed max-w-xs">
-                      {t('successMessage', 'Your number')} <strong className="text-slate-800">{phoneNumber}</strong>{' '}
+                    <p className="text-xs text-slate-600 dark:text-slate-350 mt-1.5 leading-relaxed max-w-xs">
+                      {t('successMessage', 'Your number')} <strong className="text-slate-800 dark:text-white">{phoneNumber}</strong>{' '}
                       {t('successMessageSuffix', 'is registered. You can now access AI health guidance.')}
                     </p>
                   </div>
@@ -466,12 +466,12 @@ export default function RegisterPage() {
 
             {/* ── Footer: sign-in link (steps 1–3 only) ── */}
             {step < 4 && (
-              <div className="mt-5 pt-4 border-t border-slate-100 text-center">
-                <p className="text-sm text-slate-500">
+              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+                <p className="text-sm text-slate-550 dark:text-slate-400">
                   {t('alreadyRegistered', 'Already registered?')}{' '}
                   <Link
                     href="/sign-in"
-                    className="text-teal-600 hover:text-teal-800 font-bold hover:underline underline-offset-4 transition-all"
+                    className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-bold hover:underline underline-offset-4 transition-all"
                   >
                     {t('signInHere', 'Sign in here')}
                   </Link>

@@ -13,13 +13,13 @@ import {
 import { sendPhoneOtpAction, verifyPhoneOtpAction } from './actions';
 
 const WRAPPER =
-  'relative flex items-center rounded-2xl border border-slate-200 bg-white ' +
+  'relative flex items-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 ' +
   'focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-500 ' +
   'transition-all duration-300 shadow-sm';
 
 const FIELD =
-  'w-full h-12 bg-transparent pl-12 pr-4 rounded-2xl text-slate-800 text-base font-semibold ' +
-  'placeholder:text-slate-400 placeholder:font-normal focus:outline-none';
+  'w-full h-12 bg-transparent pl-12 pr-4 rounded-2xl text-slate-800 dark:text-slate-100 text-base font-semibold ' +
+  'placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none';
 
 const BTN =
   'w-full h-12 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-2xl font-bold ' +
@@ -115,10 +115,10 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-gradient-to-tr from-slate-50 via-cyan-50/30 to-teal-50/30">
+    <div className="h-screen w-screen overflow-hidden flex bg-gradient-to-tr from-slate-50 via-cyan-50/30 to-teal-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-teal-950/20 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
       {/* ── Left panel: illustration (desktop only) ── */}
-      <div className="hidden lg:flex w-[42%] shrink-0 bg-gradient-to-br from-cyan-50 via-teal-50/60 to-emerald-50/40 border-r border-slate-200/70 flex-col justify-between p-10 xl:p-14 relative overflow-hidden select-none">
+      <div className="hidden lg:flex w-[42%] shrink-0 bg-gradient-to-br from-cyan-50 via-teal-50/60 to-emerald-50/40 dark:from-slate-900 dark:via-teal-950/40 dark:to-emerald-950/30 border-r border-slate-200/70 dark:border-slate-800 flex-col justify-between p-10 xl:p-14 relative overflow-hidden select-none">
         {/* Decorative blobs */}
         <div className="absolute top-1/4 -left-24 w-72 h-72 rounded-full bg-gradient-to-r from-cyan-200/30 to-teal-200/30 blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 -right-24 w-72 h-72 rounded-full bg-gradient-to-r from-emerald-200/20 to-cyan-200/20 blur-3xl pointer-events-none" />
@@ -141,20 +141,20 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             transition={{ duration: 0.7, ease: 'easeOut' }}
             src="/login_banner.png"
             alt="Arogya AI Health Illustration"
-            className="w-full max-w-[300px] xl:max-w-[340px] h-auto object-contain rounded-3xl shadow-xl shadow-teal-500/10 bg-white p-4 border border-slate-100"
+            className="w-full max-w-[300px] xl:max-w-[340px] h-auto object-contain rounded-3xl shadow-xl shadow-teal-500/10 dark:shadow-teal-950/25 bg-white dark:bg-slate-900 p-4 border border-slate-100 dark:border-slate-800"
           />
           <div className="text-center max-w-xs space-y-2">
-            <h3 className="text-xl xl:text-2xl font-extrabold text-slate-800 leading-tight">
+            <h3 className="text-xl xl:text-2xl font-extrabold text-slate-800 dark:text-white leading-tight">
               Secure Medical Records &amp; 24/7 Support
             </h3>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-450 leading-relaxed">
               Verify your mobile number to access personalized symptom analysis, diagnostic guidance, and instant WhatsApp syncing.
             </p>
           </div>
         </div>
 
         {/* Trust badges */}
-        <div className="flex items-center justify-center gap-4 relative z-10 border-t border-slate-200/70 pt-5 text-xs text-slate-400 font-semibold flex-wrap">
+        <div className="flex items-center justify-center gap-4 relative z-10 border-t border-slate-200/70 dark:border-slate-800 pt-5 text-xs text-slate-450 dark:text-slate-500 font-semibold flex-wrap">
           <span>🔒 HIPAA Compliant</span>
           <span>•</span>
           <span>🛡️ Data Encrypted</span>
@@ -170,7 +170,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
         <div className="shrink-0 px-4 sm:px-8 pt-4 sm:pt-6 flex items-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:shadow-sm transition-all font-semibold text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:border-teal-300 dark:hover:border-teal-800 hover:shadow-sm transition-all font-semibold text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t('backToHome', 'Back to Home')}</span>
@@ -189,7 +189,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(13,148,136,0.08)] border border-slate-200/60 relative z-10"
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(13,148,136,0.08)] dark:shadow-[0_20px_60px_rgba(13,148,136,0.15)] border border-slate-200/60 dark:border-slate-800 relative z-10"
           >
             {/* Mobile logo */}
             <div className="flex flex-col items-center lg:hidden mb-6">
@@ -203,10 +203,10 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
 
             {/* Heading */}
             <div className="mb-5 space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white leading-tight">
                 {step === 'phone' ? t('welcomeBack', 'Welcome Back') : t('enterCode', 'Verification Code')}
               </h2>
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
                 {step === 'phone'
                   ? t('signInSubtitle', 'Verify your mobile number to sign in safely.')
                   : `${t('otpSentTo', 'Enter the 6-digit code sent to')} ${phoneNumber}`}
@@ -217,13 +217,13 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             <AnimatePresence mode="wait">
               {error && (
                 <motion.div key="err" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                  className="bg-rose-50 border border-rose-100 p-3 rounded-2xl text-rose-700 text-sm mb-4 flex items-start gap-2">
+                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-2xl text-rose-750 dark:text-rose-350 text-sm mb-4 flex items-start gap-2">
                   <span className="font-bold select-none">⚠️</span><span>{error}</span>
                 </motion.div>
               )}
               {success && (
                 <motion.div key="ok" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                  className="bg-emerald-50 border border-emerald-100 p-3 rounded-2xl text-emerald-700 text-sm mb-4 flex items-center gap-2">
+                  className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 p-3 rounded-2xl text-emerald-750 dark:text-emerald-350 text-sm mb-4 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /><span>{success}</span>
                 </motion.div>
               )}
@@ -235,11 +235,11 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 <motion.form key="phone" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}
                   onSubmit={handleSendOtp} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label htmlFor="phone" className="block text-sm font-bold text-slate-700">
+                    <label htmlFor="phone" className="block text-sm font-bold text-slate-700 dark:text-slate-300">
                       {t('mobileNumber', 'Mobile Number')}
                     </label>
                     <div className={WRAPPER}>
-                      <div className="flex items-center px-3 py-3 border-r border-slate-100 bg-slate-50 rounded-l-2xl text-slate-600 font-extrabold select-none shrink-0 text-sm">
+                      <div className="flex items-center px-3 py-3 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-l-2xl text-slate-600 dark:text-slate-400 font-extrabold select-none shrink-0 text-sm">
                         🇮🇳 +91
                       </div>
                       <div className="relative flex-1">
@@ -261,7 +261,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 <motion.form key="otp" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
                   onSubmit={handleVerifyOtp} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label htmlFor="otp" className="block text-sm font-bold text-slate-700">
+                    <label htmlFor="otp" className="block text-sm font-bold text-slate-700 dark:text-slate-300">
                       {t('otpCode', '6-Digit OTP Code')}
                     </label>
                     <div className={WRAPPER}>
@@ -274,16 +274,16 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <button type="button" onClick={() => setStep('phone')}
-                      className="text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-1 font-medium cursor-pointer">
+                      className="text-slate-550 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1 font-medium cursor-pointer">
                       <ArrowLeft className="w-4 h-4" /><span>{t('changeNumber', 'Change Number')}</span>
                     </button>
                     {timer > 0 ? (
-                      <span className="text-slate-400 font-medium">
-                        {t('resendIn', 'Resend in')} <strong className="text-teal-600 font-bold">{timer}s</strong>
+                      <span className="text-slate-400 dark:text-slate-500 font-medium">
+                        {t('resendIn', 'Resend in')} <strong className="text-teal-600 dark:text-teal-400 font-bold">{timer}s</strong>
                       </span>
                     ) : (
                       <button type="button" onClick={handleResend} disabled={loading}
-                        className="text-teal-600 hover:text-teal-800 font-semibold underline underline-offset-4 cursor-pointer">
+                        className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-350 font-semibold underline underline-offset-4 cursor-pointer">
                         {t('resendCode', 'Resend Code')}
                       </button>
                     )}
@@ -298,19 +298,19 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             </AnimatePresence>
 
             {/* Footer */}
-            <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-              <p className="text-sm text-slate-500">
+            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 text-center">
+              <p className="text-sm text-slate-550 dark:text-slate-455">
                 {step === 'phone' ? (
                   <>
                     {t('newToArogya', 'New to Arogya AI?')}{' '}
-                    <Link href="/register" className="text-teal-600 hover:text-teal-800 font-bold hover:underline transition-all underline-offset-4">
+                    <Link href="/register" className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-bold hover:underline transition-all underline-offset-4">
                       {t('registerMobile', 'Register mobile here')}
                     </Link>
                   </>
                 ) : (
                   <>
                     {t('havingTrouble', 'Having trouble? Contact')}{' '}
-                    <Link href="/contact" className="text-teal-600 font-bold hover:underline transition-all">
+                    <Link href="/contact" className="text-teal-600 dark:text-teal-400 font-bold hover:underline transition-all">
                       {t('supportTeam', 'Support Team')}
                     </Link>
                   </>

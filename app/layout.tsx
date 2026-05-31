@@ -83,8 +83,32 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${manrope.className}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-[100dvh] bg-background text-foreground">
+      <body className="min-h-[100dvh] bg-background text-foreground" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var mode = localStorage.getItem('theme-mode');
+                  if (mode === 'dark' || (!mode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  
+                  var lang = localStorage.getItem('arogya-language');
+                  if (lang) {
+                    document.documentElement.lang = lang;
+                    var googleLang = lang === 'od' ? 'or' : lang;
+                    document.cookie = 'googtrans=/en/' + googleLang + '; path=/';
+                  }
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
         {/* Structured Data */}
         <OrganizationStructuredData />
         <WebsiteStructuredData />
