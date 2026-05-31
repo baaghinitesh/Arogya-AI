@@ -154,15 +154,21 @@ const Navbar = () => {
               <MenuButton className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-750/80 hover:border-teal-350 dark:hover:border-teal-400 text-xs font-bold text-gray-700 dark:text-gray-200 transition-all shadow-sm cursor-pointer shrink-0 notranslate hover:scale-105">
                 <span className="notranslate">{currentLanguage.code.toUpperCase()}</span>
               </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-850 rounded-lg shadow-lg border border-gray-200 dark:border-slate-750 py-1 z-50 notranslate max-h-[300px] overflow-y-auto">
+              <MenuItems className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-gray-200 dark:border-slate-700 py-1 z-50 notranslate max-h-[300px] overflow-y-auto">
                 {supportedLanguages.map((language) => (
                   <MenuItem key={language.code}>
                     {({ active }) => (
                       <button
                         onClick={() => changeLanguage(language.code)}
                         className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 notranslate ${
-                          active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-800 dark:text-gray-200'
-                        } ${currentLanguage.code === language.code ? 'font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-slate-800' : ''}`}
+                          active
+                            ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400'
+                            : 'text-gray-800 dark:text-slate-200'
+                        } ${
+                          currentLanguage.code === language.code
+                            ? 'font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-slate-800'
+                            : ''
+                        }`}
                       >
                         {language.nativeName}
                       </button>
@@ -199,20 +205,20 @@ const Navbar = () => {
                   )}
                 </MenuButton>
                 
-                <MenuItems className="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-850 rounded-xl shadow-xl border border-gray-200 dark:border-slate-750 py-1.5 z-50">
+                <MenuItems className="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 py-1.5 z-50">
                   {isLoggedIn ? (
                     <>
-                      <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-750/60 mb-1.5">
-                        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500">SIGNED IN AS</p>
-                        <p className="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{user.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{user.phone_number}</p>
+                      <div className="px-4 py-2.5 border-b border-gray-100 dark:border-slate-700 mb-1">
+                        <p className="text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wide">Signed in as</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-slate-100 truncate mt-0.5">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user.phone_number}</p>
                       </div>
                       <MenuItem>
                         {({ active }) => (
                           <Link
                             href="/chat"
-                            className={`block px-4 py-2.5 text-sm text-left font-medium transition-all ${
-                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-slate-300'
                             }`}
                           >
                             Go to Web Portal
@@ -227,8 +233,8 @@ const Navbar = () => {
                               await signOut();
                               window.location.reload();
                             }}
-                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-all ${
-                              active ? 'bg-red-50 dark:bg-red-950/20 text-red-650 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${
+                              active ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
                             }`}
                           >
                             Sign Out
@@ -242,8 +248,8 @@ const Navbar = () => {
                         {({ active }) => (
                           <Link
                             href="/sign-in"
-                            className={`block px-4 py-2.5 text-sm font-medium transition-all ${
-                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-slate-300'
                             }`}
                           >
                             Sign In
@@ -254,8 +260,8 @@ const Navbar = () => {
                         {({ active }) => (
                           <Link
                             href="/register"
-                            className={`block px-4 py-2.5 text-sm font-medium transition-all ${
-                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-slate-300'
                             }`}
                           >
                             Register
