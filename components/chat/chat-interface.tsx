@@ -97,28 +97,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
 
   // Fetch authenticated user details on mount
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch('/api/user');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.phone_number) {
-            setUser(data);
-            setIsGuest(false);
-          } else {
-            setIsGuest(true);
-          }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    fetch('/api/user', { signal: controller.signal })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        clearTimeout(timeoutId);
+        if (data && data.phone_number) {
+          setUser(data);
+          setIsGuest(false);
         } else {
           setIsGuest(true);
         }
-      } catch (e) {
-        console.error('Failed to fetch user session:', e);
+      })
+      .catch(() => {
+        clearTimeout(timeoutId);
         setIsGuest(true);
-      } finally {
-        setIsAuthLoading(false); // Auth check complete, safe to show UI
-      }
-    };
-    fetchUser();
+      })
+      .finally(() => setIsAuthLoading(false));
+
+    return () => controller.abort();
   }, []);
 
   // Load chat sessions when user state is initialized

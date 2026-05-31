@@ -25,13 +25,22 @@ const Navbar = () => {
 
   // Check auth state once on mount only
   useEffect(() => {
-    fetch('/api/user')
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    fetch('/api/user', { signal: controller.signal })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
+        clearTimeout(timeoutId);
         setUser(data?.phone_number ? data : null);
         setAuthChecked(true);
       })
-      .catch(() => setAuthChecked(true));
+      .catch(() => {
+        clearTimeout(timeoutId);
+        setAuthChecked(true);
+      });
+
+    return () => controller.abort();
   }, []); // ← no pathname dependency — avoids re-fetch on every navigation
 
   useEffect(() => {

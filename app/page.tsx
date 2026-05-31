@@ -39,12 +39,21 @@ const HomePage = () => {
   // Check auth after splash — show popup if not registered
   useEffect(() => {
     if (showSplash) return;
-    fetch('/api/user')
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    fetch('/api/user', { signal: controller.signal })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
+        clearTimeout(timeoutId);
         if (!data?.phone_number) setShowRegisterPopup(true);
       })
-      .catch(() => setShowRegisterPopup(true));
+      .catch(() => {
+        clearTimeout(timeoutId);
+        setShowRegisterPopup(true);
+      });
+
+    return () => controller.abort();
   }, [showSplash]);
 
   if (showSplash) {

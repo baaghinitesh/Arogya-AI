@@ -104,18 +104,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('arogya-language', langCode);
     document.documentElement.lang = langCode;
 
-    // Sync with server if user is logged in (fire and forget)
-    updateUserLanguageAction(langCode).catch(err => {
-      console.error('Failed to sync language to server:', err);
-    });
+    // Sync with server — fire and forget, never block navigation
+    // Wrapped in try/catch so a dead backend never affects the UI
+    try {
+      updateUserLanguageAction(langCode).catch(() => {/* silent */});
+    } catch {/* silent */}
 
     // Set cookie for Google Translate (map od → or)
     const googleLangCode = langCode === 'od' ? 'or' : langCode;
     document.cookie = `googtrans=/en/${googleLangCode}; path=/`;
     document.cookie = `googtrans=/en/${googleLangCode}; path=/; domain=${window.location.hostname}`;
 
-    // Only reload when switching TO a different Google Translate language
-    // (needed for Google Translate widget to pick up the new cookie)
+    // Only reload when switching TO a non-English language
     if (langCode !== 'en') {
       window.location.reload();
     }

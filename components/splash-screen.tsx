@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -9,222 +10,213 @@ interface SplashScreenProps {
   duration?: number;
 }
 
-const SplashScreen: React.FC<SplashScreenProps> = ({
-  onComplete,
-  duration = 2400,
-}) => {
+const SplashContent: React.FC<{ tagline: string }> = ({ tagline }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0, scale: 1.03 }}
+    transition={{ duration: 0.5, ease: 'easeInOut' }}
+    style={{
+      position: 'fixed',
+      inset: 0,
+      zIndex: 9999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #ecfeff 0%, #f0fdfa 30%, #f0fdf4 60%, #ecfeff 100%)',
+    }}
+  >
+    {/* Animated background orbs */}
+    <motion.div
+      animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
+      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      style={{ position: 'absolute', top: '-8rem', left: '-8rem', width: '24rem', height: '24rem',
+        borderRadius: '9999px', background: 'linear-gradient(135deg, #67e8f9, #5eead4)', filter: 'blur(64px)' }}
+    />
+    <motion.div
+      animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+      transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      style={{ position: 'absolute', bottom: '-8rem', right: '-8rem', width: '24rem', height: '24rem',
+        borderRadius: '9999px', background: 'linear-gradient(315deg, #6ee7b7, #67e8f9)', filter: 'blur(64px)' }}
+    />
+    <motion.div
+      animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
+      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+      style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+        width: '16rem', height: '16rem', borderRadius: '9999px',
+        background: 'linear-gradient(90deg, #5eead4, #67e8f9)', filter: 'blur(64px)' }}
+    />
+
+    {/* Grid pattern */}
+    <div style={{
+      position: 'absolute', inset: 0, opacity: 0.03,
+      backgroundImage: 'linear-gradient(#0891b2 1px, transparent 1px), linear-gradient(90deg, #0891b2 1px, transparent 1px)',
+      backgroundSize: '40px 40px',
+    }} />
+
+    {/* Main content */}
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', textAlign: 'center', padding: '0 2rem', maxWidth: '32rem' }}>
+
+      {/* Logo */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.7, type: 'spring', stiffness: 200, damping: 16 }}
+        style={{ marginBottom: '2rem', position: 'relative' }}
+      >
+        <motion.div
+          animate={{ scale: [1, 1.25, 1], opacity: [0.4, 0, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+          style={{ position: 'absolute', inset: 0, borderRadius: '9999px',
+            background: 'linear-gradient(90deg, #22d3ee, #2dd4bf)', filter: 'blur(6px)' }}
+        />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+          style={{ position: 'absolute', inset: '-0.5rem', borderRadius: '9999px',
+            border: '2px dashed rgba(103,232,249,0.5)' }}
+        />
+        <div style={{ position: 'relative', width: '6rem', height: '6rem', borderRadius: '9999px',
+          background: 'linear-gradient(135deg, #06b6d4, #14b8a6, #10b981)',
+          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', display: 'flex',
+          alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', inset: '0.25rem', borderRadius: '9999px',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)' }} />
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="white" style={{ position: 'relative', zIndex: 1 }}>
+            <rect x="18" y="6" width="12" height="36" rx="3" />
+            <rect x="6" y="18" width="36" height="12" rx="3" />
+          </svg>
+        </div>
+      </motion.div>
+
+      {/* Brand name */}
+      <motion.div
+        initial={{ y: 24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
+      >
+        <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.75rem)', fontWeight: 700,
+          letterSpacing: '-0.025em', marginBottom: '0.25rem', lineHeight: 1.1 }}>
+          <span style={{ background: 'linear-gradient(90deg, #0891b2, #0d9488, #059669)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            Arogya
+          </span>
+          <span style={{ color: '#334155' }}> AI</span>
+        </h1>
+      </motion.div>
+
+      {/* Tagline */}
+      <motion.p
+        initial={{ y: 16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5, ease: 'easeOut' }}
+        style={{ marginTop: '0.75rem', fontSize: '1rem', color: '#64748b',
+          fontWeight: 500, letterSpacing: '0.025em', maxWidth: '20rem' }}
+      >
+        {tagline}
+      </motion.p>
+
+      {/* Divider */}
+      <motion.div
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
+        style={{ marginTop: '1.5rem', width: '4rem', height: '2px',
+          background: 'linear-gradient(90deg, #22d3ee, #2dd4bf)', borderRadius: '9999px' }}
+      />
+
+      {/* Loading bars */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9, duration: 0.3 }}
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '2rem' }}
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <motion.div
+            key={i}
+            animate={{ scaleY: [1, 2.5, 1], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.12, ease: 'easeInOut' }}
+            style={{ width: '4px', height: '16px', borderRadius: '9999px',
+              background: 'linear-gradient(180deg, #06b6d4, #14b8a6)' }}
+          />
+        ))}
+      </motion.div>
+
+      {/* Status text */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.4 }}
+        style={{ marginTop: '1rem', fontSize: '0.7rem', color: '#94a3b8',
+          letterSpacing: '0.15em', textTransform: 'uppercase' }}
+      >
+        Loading your health assistant…
+      </motion.p>
+    </div>
+
+    {/* Floating icons */}
+    {[
+      { icon: '❤️', top: '15%', left: '10%', delay: 0.6, fontSize: '1.5rem' },
+      { icon: '🩺', top: '20%', right: '12%', delay: 0.9, fontSize: '1.25rem' },
+      { icon: '💊', bottom: '20%', left: '8%', delay: 1.1, fontSize: '1.125rem' },
+      { icon: '🌿', bottom: '15%', right: '10%', delay: 0.7, fontSize: '1.5rem' },
+      { icon: '⚕️', top: '50%', left: '5%', delay: 1.3, fontSize: '1.25rem' },
+    ].map((item, i) => (
+      <motion.div
+        key={i}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: [0, 0.35, 0.35, 0], scale: [0, 1, 1, 0.8], y: [0, -12, 12, 0] }}
+        transition={{ duration: 4, repeat: Infinity, delay: item.delay, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute', fontSize: item.fontSize,
+          userSelect: 'none', pointerEvents: 'none',
+          top: (item as any).top, left: (item as any).left,
+          right: (item as any).right, bottom: (item as any).bottom,
+        }}
+      >
+        {item.icon}
+      </motion.div>
+    ))}
+  </motion.div>
+);
+
+const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, duration = 2400 }) => {
   const { t } = useTranslation();
-  const [showSplash, setShowSplash] = useState(true);
+  const tagline = t('tagline') || 'Your AI-powered health companion';
+  const [showSplash, setShowSplash] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hasShown = sessionStorage.getItem('arogya_splash_shown');
-      if (hasShown) {
-        setShowSplash(false);
-        onComplete();
-        return;
-      }
+    setMounted(true);
+
+    const hasShown = sessionStorage.getItem('arogya_splash_shown');
+    if (hasShown) {
+      onComplete();
+      return;
     }
+
+    setShowSplash(true);
 
     const timer = setTimeout(() => {
       setShowSplash(false);
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('arogya_splash_shown', 'true');
-      }
+      sessionStorage.setItem('arogya_splash_shown', 'true');
       setTimeout(onComplete, 500);
     }, duration);
 
     return () => clearTimeout(timer);
   }, [onComplete, duration]);
 
-  return (
+  // Don't render until client is mounted (portal needs document.body)
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      {showSplash && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.03 }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
-          aria-hidden="true"
-          style={{
-            background:
-              'linear-gradient(135deg, #ecfeff 0%, #f0fdfa 30%, #f0fdf4 60%, #ecfeff 100%)',
-          }}
-        >
-          {/* Animated background orbs */}
-          <motion.div
-            animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-cyan-400 to-teal-300 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400 to-cyan-300 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-teal-300 to-cyan-300 rounded-full blur-3xl"
-          />
-
-          {/* Grid pattern overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                'linear-gradient(#0891b2 1px, transparent 1px), linear-gradient(90deg, #0891b2 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-            }}
-          />
-
-          {/* Main content */}
-          <div className="relative flex flex-col items-center text-center px-8 max-w-lg">
-
-            {/* Logo mark */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.7, type: 'spring', stiffness: 200, damping: 16 }}
-              className="mb-8 relative"
-            >
-              {/* Outer glow ring */}
-              <motion.div
-                animate={{ scale: [1, 1.25, 1], opacity: [0.4, 0, 0.4] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-teal-400 blur-md"
-              />
-              {/* Inner ring */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                className="absolute -inset-2 rounded-full border-2 border-dashed border-cyan-300/50"
-              />
-
-              {/* Logo circle */}
-              <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 shadow-2xl flex items-center justify-center">
-                {/* Inner shine */}
-                <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/20 to-transparent" />
-                {/* Cross / health symbol */}
-                <svg
-                  className="w-12 h-12 text-white relative z-10"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                  stroke="currentColor"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                >
-                  <rect x="18" y="6" width="12" height="36" rx="3" fill="currentColor" stroke="none" />
-                  <rect x="6" y="18" width="36" height="12" rx="3" fill="currentColor" stroke="none" />
-                </svg>
-              </div>
-            </motion.div>
-
-            {/* Brand name */}
-            <motion.div
-              initial={{ y: 24, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
-            >
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-1">
-                <span className="bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent animate-gradient">
-                  Arogya
-                </span>
-                <span className="text-slate-700"> AI</span>
-              </h1>
-            </motion.div>
-
-            {/* Tagline */}
-            <motion.p
-              initial={{ y: 16, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5, ease: 'easeOut' }}
-              className="mt-3 text-base md:text-lg text-slate-500 font-medium tracking-wide max-w-xs"
-            >
-              {t('tagline') || 'Your AI-powered health companion'}
-            </motion.p>
-
-            {/* Divider line */}
-            <motion.div
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
-              className="mt-6 w-16 h-0.5 bg-gradient-to-r from-cyan-400 to-teal-400 rounded-full"
-            />
-
-            {/* Loading dots */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9, duration: 0.3 }}
-              className="flex items-center space-x-2 mt-8"
-            >
-              {[0, 1, 2, 3, 4].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{
-                    scaleY: [1, 2.5, 1],
-                    opacity: [0.4, 1, 0.4],
-                  }}
-                  transition={{
-                    duration: 0.9,
-                    repeat: Infinity,
-                    delay: i * 0.12,
-                    ease: 'easeInOut',
-                  }}
-                  className="w-1 h-4 rounded-full bg-gradient-to-b from-cyan-500 to-teal-500"
-                />
-              ))}
-            </motion.div>
-
-            {/* Subtle status text */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.4 }}
-              className="mt-4 text-xs text-slate-400 tracking-widest uppercase"
-            >
-              Loading your health assistant…
-            </motion.p>
-          </div>
-
-          {/* Floating health icons — decorative */}
-          {[
-            { icon: '❤️', top: '15%', left: '10%', delay: 0.6, size: 'text-2xl' },
-            { icon: '🩺', top: '20%', right: '12%', delay: 0.9, size: 'text-xl' },
-            { icon: '💊', bottom: '20%', left: '8%', delay: 1.1, size: 'text-lg' },
-            { icon: '🌿', bottom: '15%', right: '10%', delay: 0.7, size: 'text-2xl' },
-            { icon: '⚕️', top: '50%', left: '5%', delay: 1.3, size: 'text-xl' },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{
-                opacity: [0, 0.35, 0.35, 0],
-                scale: [0, 1, 1, 0.8],
-                y: [0, -12, 12, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                delay: item.delay,
-                ease: 'easeInOut',
-              }}
-              className={`absolute ${item.size} select-none pointer-events-none`}
-              style={{
-                top: item.top,
-                left: (item as any).left,
-                right: (item as any).right,
-                bottom: item.bottom,
-              }}
-            >
-              {item.icon}
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </AnimatePresence>
+      {showSplash && <SplashContent tagline={tagline} />}
+    </AnimatePresence>,
+    document.body
   );
 };
 

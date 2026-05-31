@@ -12,10 +12,7 @@ export async function getUser() {
 
   try {
     const sessionData = await verifyToken(sessionCookie.value);
-    if (
-      !sessionData ||
-      !sessionData.user
-    ) {
+    if (!sessionData || !sessionData.user) {
       return null;
     }
 
@@ -23,24 +20,31 @@ export async function getUser() {
       return null;
     }
 
-    // Direct support for phone sessions without PostgreSQL dependency
+    // Phone sessions — fully self-contained in JWT, no DB needed
     if (sessionData.user.phone_number) {
       return sessionData.user;
     }
 
-    const user = await db
+    // Email/password sessions — need PostgreSQL
+    // Wrap in a race with a 3-second timeout so a dead DB never blocks the UI
+    const dbQuery = db
       .select()
       .from(users)
       .where(and(eq(users.id, Number(sessionData.user.id)), isNull(users.deletedAt)))
       .limit(1);
 
-    if (user.length === 0) {
+    const timeout = new Promise<null>((resolve) =>
+      setTimeout(() => resolve(null), 3000)
+    );
+
+    const result = await Promise.race([dbQuery, timeout]);
+    if (!result || (Array.isArray(result) && result.length === 0)) {
       return null;
     }
 
-    return user[0];
+    return Array.isArray(result) ? result[0] : null;
   } catch (error) {
-    console.error('Error verifying session token:', error);
+    // Never throw — a DB error should not crash the page
     return null;
   }
 }

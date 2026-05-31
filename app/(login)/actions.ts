@@ -265,14 +265,21 @@ import { setPhoneSession } from '@/lib/auth/session';
 
 export async function sendPhoneOtpAction(phone_number: string) {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/send-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_number }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.name === 'AbortError') {
+      return { success: false, message: 'Backend server is not responding. Please start the server.' };
+    }
     console.error('sendPhoneOtpAction error:', error);
     return { success: false, message: 'Failed to connect to backend server' };
   }
@@ -280,42 +287,52 @@ export async function sendPhoneOtpAction(phone_number: string) {
 
 export async function verifyPhoneOtpAction(phone_number: string, otp: string) {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_number, otp }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     const data = await response.json();
     
     if (data.success) {
-      // Fetch user profile from backend
-      const profileResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/${phone_number}`);
-      if (profileResponse.ok) {
-        const profileData = await profileResponse.json();
-        const user = profileData.user;
-        
-        // Save session
-        await setPhoneSession({
-          phone_number: user.phone_number,
-          name: user.name,
-          age: user.age,
-          gender: user.gender,
-          pincode: user.pincode,
-          language: user.language,
-          token: data.token,
-        });
-      } else {
-        // Fallback if profile not found (should not happen if registered)
-        await setPhoneSession({
-          phone_number,
-          name: 'Registered User',
-          token: data.token,
-        });
+      const profileController = new AbortController();
+      const profileTimeout = setTimeout(() => profileController.abort(), 5000);
+      try {
+        const profileResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/${phone_number}`,
+          { signal: profileController.signal }
+        );
+        clearTimeout(profileTimeout);
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          const user = profileData.user;
+          await setPhoneSession({
+            phone_number: user.phone_number,
+            name: user.name,
+            age: user.age,
+            gender: user.gender,
+            pincode: user.pincode,
+            language: user.language,
+            token: data.token,
+          });
+        } else {
+          await setPhoneSession({ phone_number, name: 'Registered User', token: data.token });
+        }
+      } catch {
+        clearTimeout(profileTimeout);
+        await setPhoneSession({ phone_number, name: 'Registered User', token: data.token });
       }
     }
     
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.name === 'AbortError') {
+      return { success: false, message: 'Backend server is not responding. Please start the server.' };
+    }
     console.error('verifyPhoneOtpAction error:', error);
     return { success: false, message: 'Failed to verify OTP' };
   }
@@ -330,11 +347,15 @@ export async function registerPhoneUserAction(payload: {
   language: string;
 }) {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -342,8 +363,6 @@ export async function registerPhoneUserAction(payload: {
     }
     
     const data = await response.json();
-    
-    // Auto-login after registration
     await setPhoneSession({
       phone_number: data.phone_number,
       name: data.name,
@@ -355,7 +374,10 @@ export async function registerPhoneUserAction(payload: {
     });
     
     return { success: true, user: data };
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.name === 'AbortError') {
+      return { success: false, message: 'Backend server is not responding. Please start the server at localhost:8000.' };
+    }
     console.error('registerPhoneUserAction error:', error);
     return { success: false, message: 'Failed to register user' };
   }
@@ -370,22 +392,25 @@ export async function updateUserLanguageAction(language: string) {
 
     const phone_number = session.user.phone_number;
 
-    // Call FastAPI backend to update the language in SQLite
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/update-language`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_number, language }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (response.ok) {
-      // Re-sign session cookie with updated language
       await setPhoneSession({
         phone_number,
         name: session.user.name || '',
         age: session.user.age,
         gender: session.user.gender,
         pincode: session.user.pincode,
-        language: language,
+        language,
         token: session.user.token,
       });
       return { success: true };
@@ -393,9 +418,9 @@ export async function updateUserLanguageAction(language: string) {
       const errorData = await response.json();
       return { success: false, error: errorData.detail || 'Failed to update language on backend' };
     }
-  } catch (error) {
-    console.error('updateUserLanguageAction error:', error);
+  } catch (error: any) {
+    // Silently fail — language sync is non-critical
     return { success: false, error: 'Failed to update user language' };
   }
 }
-
+
