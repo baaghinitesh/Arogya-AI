@@ -61,7 +61,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50/70 via-slate-50 to-emerald-50/70">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50/70 via-slate-50 to-emerald-50/70 dark:from-slate-950 dark:via-slate-900 dark:to-teal-950/20 text-gray-900 dark:text-gray-100 transition-colors duration-300">
 
       {/* ── Registration popup ── */}
       <AnimatePresence>
@@ -77,12 +77,12 @@ const HomePage = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
               transition={{ type: 'spring', stiffness: 280, damping: 24 }}
-              className="bg-white rounded-3xl border border-slate-100 p-7 max-w-md w-full shadow-2xl relative"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-7 max-w-md w-full shadow-2xl relative"
             >
               {/* Dismiss */}
               <button
                 onClick={() => setShowRegisterPopup(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+                className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                 aria-label="Dismiss"
               >
                 <XMarkIcon className="w-5 h-5" />
@@ -95,13 +95,13 @@ const HomePage = () => {
 
               {/* Copy */}
               <div className="text-center space-y-2 mb-6">
-                <h2 className="text-2xl font-extrabold text-slate-900">
+                <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
                   Welcome to Arogya AI
                 </h2>
-                <p className="text-sm text-slate-500 leading-relaxed">
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                   To access personalized health guidance, secure medical records, and WhatsApp sync — register your mobile number. It only takes 30 seconds.
                 </p>
-                <p className="text-sm font-semibold text-teal-600">
+                <p className="text-sm font-semibold text-teal-600 dark:text-teal-400">
                   Already registered? Sign in to continue.
                 </p>
               </div>
@@ -116,7 +116,7 @@ const HomePage = () => {
                 </Link>
                 <Link
                   href="/sign-in"
-                  className="w-full py-3.5 border border-slate-200 hover:border-teal-300 hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-bold rounded-2xl transition-all text-center text-sm"
+                  className="w-full py-3.5 border border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/20 text-slate-700 dark:text-slate-250 hover:text-teal-700 dark:hover:text-teal-450 font-bold rounded-2xl transition-all text-center text-sm"
                 >
                   Sign In to My Account
                 </Link>
@@ -148,13 +148,13 @@ const HomePage = () => {
               transition={{ duration: 0.8 }}
               className="max-w-4xl mx-auto"
             >
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-cyan-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent animate-gradient">
                   {t('heroTitle')}
                 </span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                 {t('heroSubtitle')}
               </p>
 
@@ -168,9 +168,9 @@ const HomePage = () => {
                 
                 <Link 
                   href="/chat"
-                  className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 border border-gray-200 group"
+                  className="px-8 py-4 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 border border-gray-200 dark:border-slate-700 group"
                 >
-                  <ChatBubbleLeftRightIcon className="w-6 h-6" />
+                  <ChatBubbleLeftRightIcon className="w-6 h-6 text-teal-650 dark:text-teal-400" />
                   <span className="group-hover:translate-x-1 transition-transform duration-300">
                     {t('tryWebChat')}
                   </span>
@@ -198,7 +198,7 @@ const HomePage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white/50 backdrop-blur-sm">
+      <section className="py-16 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm border-y border-gray-100/50 dark:border-slate-800/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -207,10 +207,10 @@ const HomePage = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {t('featuresTitle')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {t('featuresSubtitle')}
             </p>
           </motion.div>
@@ -242,15 +242,15 @@ const HomePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105"
+                className="bg-white dark:bg-slate-800/50 border border-transparent dark:border-slate-700/50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105"
               >
                 <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -269,18 +269,18 @@ const HomePage = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {t('howItWorksTitle')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Get health assistance in just three simple steps
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
             {/* Connection Lines */}
-            <div className="hidden md:block absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-gradient-to-r from-cyan-300 to-teal-300 -translate-y-1/2"></div>
-            <div className="hidden md:block absolute top-1/2 right-1/3 w-1/3 h-0.5 bg-gradient-to-r from-teal-300 to-emerald-300 -translate-y-1/2"></div>
+            <div className="hidden md:block absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-gradient-to-r from-cyan-300/50 to-teal-300/50 dark:from-cyan-900/50 dark:to-teal-900/50 -translate-y-1/2"></div>
+            <div className="hidden md:block absolute top-1/2 right-1/3 w-1/3 h-0.5 bg-gradient-to-r from-teal-300/50 to-emerald-300/50 dark:from-teal-900/50 dark:to-emerald-900/50 -translate-y-1/2"></div>
 
             {[
               {
@@ -318,10 +318,10 @@ const HomePage = () => {
                     {step.step}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {step.description}
                 </p>
               </motion.div>
@@ -331,7 +331,7 @@ const HomePage = () => {
       </section>
 
       {/* Integration Section */}
-      <section className="py-16 bg-white/50 backdrop-blur-sm">
+      <section className="py-16 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm border-y border-gray-100/50 dark:border-slate-800/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -340,10 +340,10 @@ const HomePage = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Multiple Ways to Connect
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Access Arogya AI through your preferred platform
             </p>
           </motion.div>
@@ -354,17 +354,17 @@ const HomePage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="bg-green-50 rounded-2xl p-8 text-center group hover:bg-green-100 transition-colors duration-300"
+              className="bg-green-50/50 dark:bg-green-950/10 border border-green-100/30 dark:border-green-900/20 rounded-2xl p-8 text-center group hover:bg-green-100/50 dark:hover:bg-green-950/20 transition-colors duration-300"
             >
               <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.306"/>
                 </svg>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                 WhatsApp (Primary)
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Chat directly through WhatsApp for instant health guidance in your language
               </p>
               <WhatsAppButton 
@@ -378,20 +378,20 @@ const HomePage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="bg-blue-50 rounded-2xl p-8 text-center group hover:bg-blue-100 transition-colors duration-300"
+              className="bg-blue-50/50 dark:bg-blue-950/10 border border-blue-100/30 dark:border-blue-900/20 rounded-2xl p-8 text-center group hover:bg-blue-100/50 dark:hover:bg-blue-950/20 transition-colors duration-300"
             >
               <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <ChatBubbleLeftRightIcon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                 Web Chat (Fallback)
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Use our web interface when WhatsApp is not available
               </p>
               <Link 
                 href="/chat"
-                className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 border border-blue-600"
               >
                 <span>Try Web Chat</span>
                 <ArrowRightIcon className="w-5 h-5" />
@@ -411,10 +411,10 @@ const HomePage = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               What Users Say
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Real experiences from people who trust Arogya AI for their health needs
             </p>
           </motion.div>
@@ -449,28 +449,28 @@ const HomePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-white dark:bg-slate-800/60 border border-transparent dark:border-slate-700/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                   "{testimonial.text}"
                 </p>
                 <div className="flex items-center">
                   <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
-                    className="w-12 h-12 rounded-full mr-4"
+                    className="w-12 h-12 rounded-full mr-4 border border-teal-100/50 dark:border-teal-900/30"
                     width={48}
                     height={48}
                     priority={index === 0}
                   />
                   <div>
-                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500">{testimonial.location}</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.location}</p>
                   </div>
                 </div>
               </motion.div>

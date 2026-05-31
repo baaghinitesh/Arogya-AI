@@ -123,11 +123,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setThemeColorState(color);
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   return (
     <ThemeContext.Provider value={{ mode, themeColor, toggleMode, setThemeColor }}>
       {children}

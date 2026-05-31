@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ChevronDownIcon, Bars3Icon, XMarkIcon, UserPlusIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, Bars3Icon, XMarkIcon, UserPlusIcon, ArrowRightEndOnRectangleIcon, SunIcon, MoonIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 import { useLanguage } from '../contexts/language-context';
+import { useTheme } from '../contexts/theme-context';
 import WhatsAppButton from './whatsapp-button';
 import LogoUploader from './logo-uploader';
 
@@ -15,16 +16,19 @@ const Navbar = () => {
   const { t } = useTranslation();
   const pathname = usePathname();
   const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
+  const { mode: themeMode, toggleMode: toggleThemeMode } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
   // Check auth state once on mount only
   useEffect(() => {
+    setMounted(true);
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -92,8 +96,8 @@ const Navbar = () => {
       transition={{ y: { type: 'spring', stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
       className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 backdrop-blur-md shadow-lg border-gray-200/60'
-          : 'bg-white/80 backdrop-blur-md shadow-md border-gray-200/50'
+          ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border-gray-200/60 dark:border-slate-800/60'
+          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-md border-gray-200/50 dark:border-slate-800/50'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,8 +120,8 @@ const Navbar = () => {
                 prefetch={true}
                 className={`font-medium transition-colors duration-200 relative group text-sm lg:text-base ${
                   pathname === item.href
-                    ? 'text-teal-600'
-                    : 'text-gray-700 hover:text-teal-600'
+                    ? 'text-teal-600 dark:text-teal-400'
+                    : 'text-gray-755 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400'
                 }`}
               >
                 {item.label ?? t(item.key)}
@@ -128,25 +132,39 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop right side: language + auth buttons + whatsapp */}
-          <div className="hidden md:flex items-center space-x-3 shrink-0">
-            {/* Language dropdown */}
-            <Menu as="div" className="relative">
-              <MenuButton className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-white/60 backdrop-blur-sm border border-gray-200 hover:bg-white/80 transition-all duration-200 text-sm font-medium text-gray-800">
-                <span>{currentLanguage.nativeName}</span>
-                <ChevronDownIcon className="w-3.5 h-3.5 text-gray-500" />
+          {/* Desktop right side: language + auth + theme + chat + whatsapp */}
+          <div className="hidden md:flex items-center space-x-2.5 shrink-0">
+            {/* 1. Small Global Dark/Light Theme Toggle */}
+            {mounted && (
+              <button
+                onClick={toggleThemeMode}
+                className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-750/80 hover:border-teal-350 dark:hover:border-teal-400 text-gray-700 dark:text-gray-200 hover:scale-105 transition-all shadow-sm cursor-pointer shrink-0"
+                title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {themeMode === 'dark' ? (
+                  <SunIcon className="w-5 h-5 text-amber-500" />
+                ) : (
+                  <MoonIcon className="w-5 h-5 text-indigo-500" />
+                )}
+              </button>
+            )}
+
+            {/* 2. Language dropdown (Globe/Code circle) */}
+            <Menu as="div" className="relative notranslate shrink-0">
+              <MenuButton className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-750/80 hover:border-teal-350 dark:hover:border-teal-400 text-xs font-bold text-gray-700 dark:text-gray-200 transition-all shadow-sm cursor-pointer shrink-0 notranslate hover:scale-105">
+                <span className="notranslate">{currentLanguage.code.toUpperCase()}</span>
               </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+              <MenuItems className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-850 rounded-lg shadow-lg border border-gray-200 dark:border-slate-750 py-1 z-50 notranslate max-h-[300px] overflow-y-auto">
                 {supportedLanguages.map((language) => (
                   <MenuItem key={language.code}>
                     {({ active }) => (
                       <button
                         onClick={() => changeLanguage(language.code)}
-                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
-                          active ? 'bg-teal-50 text-teal-600' : 'text-gray-800'
-                        } ${currentLanguage.code === language.code ? 'font-semibold text-teal-600 bg-teal-50' : ''}`}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 notranslate ${
+                          active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-800 dark:text-gray-200'
+                        } ${currentLanguage.code === language.code ? 'font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-slate-800' : ''}`}
                       >
-                        {language.nativeName} ({language.name})
+                        {language.nativeName}
                       </button>
                     )}
                   </MenuItem>
@@ -154,50 +172,129 @@ const Navbar = () => {
               </MenuItems>
             </Menu>
 
-            {/* Auth buttons — only show after auth check to avoid flash */}
-            {authChecked && (
-              isLoggedIn ? (
-                /* Logged in: show user indicator */
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-teal-50 border border-teal-100">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
-                    {user.name?.[0]?.toUpperCase() ?? '👤'}
-                  </div>
-                  <span className="text-sm font-semibold text-teal-700 max-w-[80px] truncate">
-                    {user.name ?? user.phone_number}
-                  </span>
-                </div>
-              ) : (
-                /* Not logged in: Register + Sign In */
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/register"
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-teal-600 text-white text-sm font-bold shadow-md shadow-teal-600/20 hover:shadow-lg hover:shadow-teal-600/30 transition-all"
-                  >
-                    <UserPlusIcon className="w-4 h-4" />
-                    <span>Register</span>
-                  </Link>
-                  <Link
-                    href="/sign-in"
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm font-bold hover:border-teal-300 hover:text-teal-600 transition-all"
-                  >
-                    <ArrowRightEndOnRectangleIcon className="w-4 h-4" />
-                    <span>Sign In</span>
-                  </Link>
-                </div>
-              )
-            )}
+            {/* 3. Small Circle Chat Icon Link */}
+            <Link
+              href="/chat"
+              className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-750/80 hover:border-teal-355 dark:hover:border-teal-450 text-gray-700 dark:text-gray-200 hover:scale-105 transition-all shadow-sm cursor-pointer shrink-0"
+              title="Arogya AI Web Chat Portal"
+            >
+              <ChatBubbleLeftRightIcon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            </Link>
 
+            {/* 4. Small Circle WhatsApp Button */}
             <WhatsAppButton variant="navbar" message="Hi! I'd like to know more about Arogya AI health services." />
+
+            {/* 5. Account/Profile Dropdown Menu */}
+            {authChecked && (
+              <Menu as="div" className="relative shrink-0">
+                <MenuButton className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-750/80 hover:border-teal-350 dark:hover:border-teal-400 text-gray-700 dark:text-gray-200 transition-all shadow-sm cursor-pointer shrink-0 hover:scale-105" title="Account Settings">
+                  {isLoggedIn ? (
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-sm font-bold">
+                      {user.name?.[0]?.toUpperCase() ?? '👤'}
+                    </div>
+                  ) : (
+                    <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  )}
+                </MenuButton>
+                
+                <MenuItems className="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-850 rounded-xl shadow-xl border border-gray-200 dark:border-slate-750 py-1.5 z-50">
+                  {isLoggedIn ? (
+                    <>
+                      <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-750/60 mb-1.5">
+                        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500">SIGNED IN AS</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{user.phone_number}</p>
+                      </div>
+                      <MenuItem>
+                        {({ active }) => (
+                          <Link
+                            href="/chat"
+                            className={`block px-4 py-2.5 text-sm text-left font-medium transition-all ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            }`}
+                          >
+                            Go to Web Portal
+                          </Link>
+                        )}
+                      </MenuItem>
+                      <MenuItem>
+                        {({ active }) => (
+                          <button
+                            onClick={async () => {
+                              const { signOut } = await import('@/app/(login)/actions');
+                              await signOut();
+                              window.location.reload();
+                            }}
+                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-all ${
+                              active ? 'bg-red-50 dark:bg-red-950/20 text-red-650 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+                            }`}
+                          >
+                            Sign Out
+                          </button>
+                        )}
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem>
+                        {({ active }) => (
+                          <Link
+                            href="/sign-in"
+                            className={`block px-4 py-2.5 text-sm font-medium transition-all ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            }`}
+                          >
+                            Sign In
+                          </Link>
+                        )}
+                      </MenuItem>
+                      <MenuItem>
+                        {({ active }) => (
+                          <Link
+                            href="/register"
+                            className={`block px-4 py-2.5 text-sm font-medium transition-all ${
+                              active ? 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                            }`}
+                          >
+                            Register
+                          </Link>
+                        )}
+                      </MenuItem>
+                    </>
+                  )}
+                </MenuItems>
+              </Menu>
+            )}
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors duration-200"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            {isMobileMenuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
-          </button>
+          {/* Mobile Theme Toggle & Menu controls */}
+          <div className="flex items-center gap-2 md:hidden">
+            {/* Compact Mobile Theme Toggle */}
+            {mounted && (
+              <button
+                onClick={toggleThemeMode}
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-650 dark:text-gray-300 transition-colors duration-200 cursor-pointer"
+                title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {themeMode === 'dark' ? (
+                  <SunIcon className="w-5 h-5 text-amber-500" />
+                ) : (
+                  <MoonIcon className="w-5 h-5 text-indigo-500" />
+                )}
+              </button>
+            )}
+
+            {/* Mobile menu toggle */}
+            <button
+              className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-650 dark:text-gray-300 transition-colors duration-200 cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <XMarkIcon className="w-5.5 h-5.5" /> : <Bars3Icon className="w-5.5 h-5.5" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -209,7 +306,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200"
+            className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800"
           >
             <div className="px-4 py-4 space-y-1">
               {navItems.map((item) => (
@@ -219,8 +316,8 @@ const Navbar = () => {
                   prefetch={true}
                   className={`block font-medium py-2.5 px-3 rounded-lg transition-colors duration-200 ${
                     pathname === item.href
-                      ? 'text-teal-600 bg-teal-50'
-                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                      ? 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-slate-800/50'
+                      : 'text-gray-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-gray-50 dark:hover:bg-slate-800/30'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -242,7 +339,7 @@ const Navbar = () => {
                   <Link
                     href="/sign-in"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-bold hover:bg-gray-50"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-250 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800/40"
                   >
                     <ArrowRightEndOnRectangleIcon className="w-4 h-4" />
                     Sign In
@@ -251,28 +348,28 @@ const Navbar = () => {
               )}
 
               {authChecked && isLoggedIn && (
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-teal-50 border border-teal-100 mt-2">
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-teal-50 dark:bg-teal-950/20 border border-teal-100/30 dark:border-teal-900/30 mt-2">
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {user.name?.[0]?.toUpperCase() ?? '👤'}
                   </div>
-                  <span className="text-sm font-semibold text-teal-700 truncate">
+                  <span className="text-sm font-semibold text-teal-700 dark:text-teal-400 truncate">
                     {user.name ?? user.phone_number}
                   </span>
                 </div>
               )}
 
               {/* Language selector */}
-              <div className="pt-3 border-t border-gray-100 mt-2">
-                <p className="text-xs font-semibold text-gray-500 mb-2 px-1">Language</p>
-                <div className="grid grid-cols-2 gap-1.5">
+              <div className="pt-3 border-t border-gray-100 dark:border-slate-800 mt-2 notranslate">
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 px-1">Language</p>
+                <div className="grid grid-cols-2 gap-1.5 notranslate">
                   {supportedLanguages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => { changeLanguage(language.code); setIsMobileMenuOpen(false); }}
-                      className={`px-3 py-2 rounded-lg text-sm transition-colors duration-200 text-left ${
+                      className={`px-3 py-2 rounded-lg text-sm transition-colors duration-200 text-left notranslate ${
                         currentLanguage.code === language.code
-                          ? 'bg-teal-100 text-teal-600 font-semibold'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-teal-100 dark:bg-slate-800 text-teal-600 dark:text-teal-400 font-semibold'
+                          : 'text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800/40'
                       }`}
                     >
                       {language.nativeName}

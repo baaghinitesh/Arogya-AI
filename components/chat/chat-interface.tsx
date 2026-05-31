@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/language-context';
 import { useChat, ChatProvider } from '@/contexts/chat-context';
+import { useTheme } from '@/contexts/theme-context';
 import Sidebar from '@/components/chat/sidebar';
 import ChatHeader from '@/components/chat/chat-header';
 import ChatMessages from '@/components/chat/chat-messages';
@@ -46,6 +47,12 @@ const ChatInterfaceInner: React.FC<ChatInterfaceProps> = ({ className = '' }) =>
     handleSelectSession,
     playTextToSpeech
   } = useChat();
+  const { mode: themeMode } = useTheme();
+
+  // Auto-sync background theme with active light/dark mode
+  useEffect(() => {
+    setBackgroundTheme(themeMode === 'dark' ? 'dark' : 'default');
+  }, [themeMode, setBackgroundTheme]);
 
   const currentTheme = getBackgroundTheme(backgroundTheme);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);

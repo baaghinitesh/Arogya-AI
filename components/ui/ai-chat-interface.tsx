@@ -2,8 +2,10 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Mic, MicOff, Volume2, VolumeX, Plus, Settings, Menu, X, ChevronLeft, ChevronRight, ArrowLeft, Home } from 'lucide-react'
+import { Send, Mic, MicOff, Volume2, VolumeX, Plus, Settings, Menu, X, ChevronLeft, ChevronRight, ArrowLeft, Home, Sun, Moon } from 'lucide-react'
 import Link from 'next/link'
+import { useTheme } from '@/contexts/theme-context'
+import { SUPPORTED_LANGUAGES } from '@/contexts/language-context'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -81,7 +83,8 @@ const translations = {
 }
 
 export default function AIChatInterface() {
-  const [currentLanguage, setCurrentLanguage] = useState<'en' | 'hi' | 'or'>('en')
+  const { mode: themeMode, toggleMode: toggleThemeMode } = useTheme()
+  const [currentLanguage, setCurrentLanguage] = useState<string>('en')
   const [message, setMessage] = useState('')
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
@@ -107,9 +110,9 @@ export default function AIChatInterface() {
     stop: stopSpeaking, 
     isSpeaking, 
     isSupported: ttsSupported 
-  } = useSpeechSynthesis({ language: currentLanguage === 'or' ? 'od' : currentLanguage })
+  } = useSpeechSynthesis({ language: (currentLanguage === 'or' ? 'od' : currentLanguage) as any })
 
-  const t = translations[currentLanguage]
+  const t = translations[currentLanguage as keyof typeof translations] || translations.en
 
   // Auto-resize textarea
   useEffect(() => {
@@ -135,6 +138,21 @@ export default function AIChatInterface() {
   useEffect(() => {
     loadSessions()
   }, [])
+
+  // Auto-restore active session from localStorage on mount/reload once sessions list is loaded
+  useEffect(() => {
+    if (sessions.length > 0 && currentSessionId === null && typeof window !== 'undefined') {
+      const savedSessionId = localStorage.getItem('arogya-current-session-id')
+      if (savedSessionId) {
+        const matched = sessions.find(s => (s._id || s.id) === savedSessionId)
+        if (matched) {
+          const sessionId = matched._id || matched.id
+          setCurrentSessionId(sessionId)
+          loadMessages(sessionId)
+        }
+      }
+    }
+  }, [sessions, currentSessionId])
 
   // Auto-collapse sidebar on mobile
   useEffect(() => {
@@ -176,8 +194,10 @@ export default function AIChatInterface() {
       
       if (response.ok) {
         const data = await response.json()
-        setCurrentSessionId(data.session._id || data.session.id)
+        const sessionId = data.session._id || data.session.id
+        setCurrentSessionId(sessionId)
         setMessages([])
+        localStorage.setItem('arogya-current-session-id', sessionId)
         await loadSessions()
       }
     } catch (error) {
@@ -354,6 +374,7 @@ export default function AIChatInterface() {
                     const sessionId = session._id || session.id
                     setCurrentSessionId(sessionId)
                     loadMessages(sessionId)
+                    localStorage.setItem('arogya-current-session-id', sessionId)
                   }}
                 >
                   {sidebarCollapsed ? (
@@ -388,37 +409,49 @@ export default function AIChatInterface() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Chat Header */}
-        <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 py-1.5 px-4 shadow-sm shrink-0">
+        <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 py-1.5 px-3 sm:px-4 shadow-sm shrink-0">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            {/* Title Area with Symmetrical Exit Navigation */}
+            <div className="flex items-center space-x-2 min-w-0">
+              <Link
+                href="/"
+                className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 hover:bg-slate-105 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors shrink-0 flex items-center justify-center border border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 shadow-sm"
+                title="Back to Home Website"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+              
+              <h1 className="text-xs sm:text-sm md:text-base font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent select-none tracking-tight truncate">
                 Arogya AI Assistant
               </h1>
             </div>
             
             <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Back to Home Exit Button */}
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 transition-all text-xs font-bold shadow-sm cursor-pointer shrink-0"
-                title="Back to Home Website"
+              {/* Symmetrical Theme Mode Toggle Button */}
+              <button
+                onClick={toggleThemeMode}
+                className="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-605 hover:text-blue-605 transition-colors shadow-sm cursor-pointer shrink-0"
+                title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               >
-                <ArrowLeft className="w-3.5 h-3.5 shrink-0" />
-                <span className="hidden sm:inline">Back to Home</span>
-              </Link>
+                {themeMode === 'dark' ? (
+                  <Sun className="w-4 h-4 text-amber-500 animate-spin" style={{ animationDuration: '8s' }} />
+                ) : (
+                  <Moon className="w-4 h-4 text-indigo-600" />
+                )}
+              </button>
 
               {/* Language Selector */}
-              <Select value={currentLanguage} onValueChange={(value: 'en' | 'hi' | 'or') => setCurrentLanguage(value)}>
-                <SelectTrigger className="w-32 sm:w-40 h-8 bg-white border-slate-300 text-slate-700 shadow-sm rounded-lg text-xs cursor-pointer">
+              <Select value={currentLanguage} onValueChange={(value: any) => setCurrentLanguage(value)}>
+                <SelectTrigger className="w-32 sm:w-40 h-8 bg-white border-slate-300 text-slate-700 shadow-sm rounded-lg text-xs cursor-pointer notranslate">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white border-slate-200 shadow-lg">
-                  {languages.map((lang) => (
-                    <SelectItem key={lang.code} value={lang.code} className="text-slate-700 hover:bg-slate-50 cursor-pointer">
-                      <span className="flex items-center space-x-2">
-                        <span>{lang.flag}</span>
-                        <span className="hidden sm:inline">{lang.name}</span>
-                        <span className="sm:hidden">{lang.code.toUpperCase()}</span>
+                <SelectContent className="bg-white border-slate-200 shadow-lg notranslate max-h-[300px] overflow-y-auto">
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code} className="text-slate-700 hover:bg-slate-50 cursor-pointer notranslate">
+                      <span className="flex items-center space-x-2 notranslate">
+                        <span>{lang.code === 'en' ? '🇺🇸' : '🇮🇳'}</span>
+                        <span className="hidden sm:inline text-sm font-semibold">{lang.nativeName}</span>
+                        <span className="sm:hidden text-xs font-bold">{lang.code.toUpperCase()}</span>
                       </span>
                     </SelectItem>
                   ))}

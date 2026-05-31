@@ -122,6 +122,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.ok) {
         setCurrentSession(data.session);
         setMessages([]);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('arogya-current-session-id', data.session._id?.toString() || '');
+        }
         setSessions(prev => [data.session, ...prev]);
         
         if (window.innerWidth < 1024) {
@@ -240,6 +243,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const handleSelectSession = async (session: ChatSession) => {
     setCurrentSession(session);
     setMessages([]); // Responsive instant clean
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('arogya-current-session-id', session._id?.toString() || '');
+    }
     
     if (window.innerWidth < 1024) {
       setIsSidebarCollapsed(true);
@@ -300,6 +306,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (currentSession?._id === sessionId) {
           setCurrentSession(null);
           setMessages([]);
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('arogya-current-session-id');
+          }
         }
       }
     } catch (error) {
@@ -341,6 +350,19 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loadChatSessions();
     }
   }, [user, loadChatSessions]);
+
+  // Auto-restore active session from localStorage on mount/reload once sessions list is loaded
+  useEffect(() => {
+    if (sessions.length > 0 && currentSession === null && typeof window !== 'undefined') {
+      const savedSessionId = localStorage.getItem('arogya-current-session-id');
+      if (savedSessionId) {
+        const matchedSession = sessions.find(s => s._id === savedSessionId);
+        if (matchedSession) {
+          handleSelectSession(matchedSession);
+        }
+      }
+    }
+  }, [sessions, currentSession, handleSelectSession]);
 
   // Voice speech synthesis
   const playTextToSpeech = (text: string) => {

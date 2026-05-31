@@ -4,9 +4,11 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { backgroundThemes } from '@/lib/config/background';
 import { ChatLanguage } from '@/lib/types/chat';
-import { Menu, ArrowLeft } from 'lucide-react';
+import { Menu, ArrowLeft, Sun, Moon } from 'lucide-react';
 import Link from 'next/link';
 import { useChat } from '@/contexts/chat-context';
+import { useTheme } from '@/contexts/theme-context';
+import { SUPPORTED_LANGUAGES } from '@/contexts/language-context';
 
 interface ChatHeaderProps {
   backgroundTheme: string;
@@ -26,6 +28,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   currentTheme
 }) => {
   const { isSidebarCollapsed, setIsSidebarCollapsed } = useChat();
+  const { mode: themeMode, toggleMode: toggleThemeMode } = useTheme();
 
   return (
     <div className={`${currentTheme.inputArea} border-b border-slate-200 dark:border-slate-800 py-1.5 px-3 sm:px-4 shadow-sm bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shrink-0`}>
@@ -55,31 +58,30 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Background Theme Selector */}
-          <Select value={backgroundTheme} onValueChange={setBackgroundTheme}>
-            <SelectTrigger className="w-24 sm:w-32 h-8 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm text-xs cursor-pointer rounded-lg">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-slate-850 border-slate-200 dark:border-slate-850 shadow-lg rounded-xl">
-              {Object.values(backgroundThemes).map((theme) => (
-                <SelectItem key={theme.name} value={theme.name} className="text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm cursor-pointer rounded-lg">
-                  {theme.displayName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Small Symmetrical Theme Mode Toggle Button */}
+          <button
+            onClick={toggleThemeMode}
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-655 dark:text-slate-350 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors shadow-sm cursor-pointer shrink-0"
+            title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {themeMode === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-500 animate-spin" style={{ animationDuration: '8s' }} />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-600" />
+            )}
+          </button>
           
           {/* Language Selector */}
           <Select value={currentLanguage.code} onValueChange={(value) => changeLanguage(value)}>
-            <SelectTrigger className="w-28 sm:w-36 h-8 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm text-xs cursor-pointer rounded-lg">
+            <SelectTrigger className="w-28 sm:w-36 h-8 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm text-xs cursor-pointer rounded-lg notranslate">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-slate-850 border-slate-200 dark:border-slate-850 shadow-lg rounded-xl">
-              {languages.map((lang) => (
-                <SelectItem key={lang.code} value={lang.code} className="text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer rounded-lg">
-                  <span className="flex items-center space-x-2">
-                    <span>{lang.flag}</span>
-                    <span className="hidden sm:inline text-sm font-semibold">{lang.name}</span>
+            <SelectContent className="bg-white dark:bg-slate-850 border-slate-200 dark:border-slate-850 shadow-lg rounded-xl notranslate max-h-[300px] overflow-y-auto">
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <SelectItem key={lang.code} value={lang.code} className="text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer rounded-lg notranslate">
+                  <span className="flex items-center space-x-2 notranslate">
+                    <span>{lang.code === 'en' ? '🇺🇸' : '🇮🇳'}</span>
+                    <span className="hidden sm:inline text-sm font-semibold">{lang.nativeName}</span>
                     <span className="sm:hidden text-xs font-bold">{lang.code.toUpperCase()}</span>
                   </span>
                 </SelectItem>

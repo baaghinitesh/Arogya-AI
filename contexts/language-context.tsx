@@ -115,10 +115,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     document.cookie = `googtrans=/en/${googleLangCode}; path=/`;
     document.cookie = `googtrans=/en/${googleLangCode}; path=/; domain=${window.location.hostname}`;
 
-    // Only reload when switching TO a non-English language
-    if (langCode !== 'en') {
-      window.location.reload();
-    }
+    // Reload the page to let Google Translate and localized assets apply instantly
+    window.location.reload();
   };
 
   return (
