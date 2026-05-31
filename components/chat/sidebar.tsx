@@ -15,6 +15,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
+import { Home } from 'lucide-react';
 import { useChat } from '@/contexts/chat-context';
 import { ChatSession } from '@/lib/types/chat';
 
@@ -114,24 +115,35 @@ const Sidebar: React.FC = () => {
             <motion.h2
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-bold bg-gradient-to-r from-cyan-600 to-teal-655 bg-clip-text text-transparent text-base tracking-tight truncate"
+              className="font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent text-base tracking-tight truncate"
             >
               ⚕️ {t('chatHere') || 'Arogya AI Portal'}
             </motion.h2>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsSidebarCollapsed(!isCollapsed)}
-            className="text-slate-500 hover:text-slate-800 dark:text-slate-450 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg p-1.5 h-8 w-8 shrink-0 cursor-pointer transition-colors"
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {isCollapsed && !isMobile ? (
-              <ChevronRightIcon className="h-4.5 w-4.5" />
-            ) : (
-              <ChevronLeftIcon className="h-4.5 w-4.5" />
+          <div className="flex items-center gap-1 shrink-0">
+            {(!isCollapsed || isMobile) && (
+              <a
+                href="/"
+                className="p-1.5 text-slate-500 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-400 hover:bg-slate-105 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors"
+                title="Back to Home Website"
+              >
+                <Home className="w-4.5 h-4.5" />
+              </a>
             )}
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSidebarCollapsed(!isCollapsed)}
+              className="text-slate-500 hover:text-slate-800 dark:text-slate-450 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg p-1.5 h-8 w-8 shrink-0 cursor-pointer transition-colors"
+              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {isCollapsed && !isMobile ? (
+                <ChevronRightIcon className="h-4.5 w-4.5" />
+              ) : (
+                <ChevronLeftIcon className="h-4.5 w-4.5" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -139,7 +151,7 @@ const Sidebar: React.FC = () => {
       <div className="p-3 shrink-0">
         <Button
           onClick={onCreateNewSession}
-          className="w-full bg-gradient-to-r from-cyan-600 via-cyan-655 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-md shadow-teal-500/10 hover:shadow-lg transition-all duration-200 h-11 flex items-center justify-center p-0 cursor-pointer"
+          className="w-full bg-gradient-to-r from-cyan-600 via-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-md shadow-teal-500/10 hover:shadow-lg transition-all duration-200 h-11 flex items-center justify-center p-0 cursor-pointer"
           title={isCollapsed && !isMobile ? 'Start a New Chat' : undefined}
         >
           <PlusIcon className="h-5 w-5 shrink-0" />
@@ -278,13 +290,31 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Sidebar Footer */}
-      {(!isCollapsed || isMobile) && (
-        <div className="p-3 border-t border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850/30 shrink-0">
-          <p className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 text-center flex items-center justify-center gap-1">
-            🔒 Protected Health Portal
-          </p>
-        </div>
-      )}
+      <div className="p-3 border-t border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/25 shrink-0 select-none">
+        {(!isCollapsed || isMobile) ? (
+          <div className="flex flex-col gap-2">
+            <a
+              href="/"
+              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-705 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-all text-center cursor-pointer flex items-center justify-center gap-1.5 border border-slate-200/50 dark:border-slate-700/30 shadow-sm"
+            >
+              <Home className="w-3.5 h-3.5 animate-pulse" style={{ animationDuration: '4s' }} />
+              <span>Back to Home Website</span>
+            </a>
+            <p className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 text-center flex items-center justify-center gap-1">
+              🔒 Protected Health Portal
+            </p>
+          </div>
+        ) : (
+          <a
+            href="/"
+            className="w-9 h-9 mx-auto flex items-center justify-center bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-705 border border-slate-200/40 dark:border-slate-700 text-slate-500 dark:text-slate-450 rounded-xl transition-all cursor-pointer shadow-sm animate-pulse"
+            style={{ animationDuration: '6s' }}
+            title="Back to Home Website"
+          >
+            <Home className="w-4.5 h-4.5" />
+          </a>
+        )}
+      </div>
     </motion.div>
   );
 };

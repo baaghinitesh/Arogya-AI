@@ -65,7 +65,14 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isAuthPage = pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up') || pathname.startsWith('/register');
+  // Normalize pathname by removing locale prefix if present (e.g., /hi/chat -> /chat)
+  const normalizedPath = pathname ? pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') : '';
+  const isAuthPage = 
+    normalizedPath.startsWith('/sign-in') || 
+    normalizedPath.startsWith('/sign-up') || 
+    normalizedPath.startsWith('/register') ||
+    normalizedPath.startsWith('/chat') ||
+    normalizedPath.startsWith('/improved-chat');
   if (isAuthPage) return null;
 
   const navItems = [

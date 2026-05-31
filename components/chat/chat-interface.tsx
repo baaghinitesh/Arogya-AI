@@ -61,7 +61,7 @@ const ChatInterfaceInner: React.FC<ChatInterfaceProps> = ({ className = '' }) =>
   }, [messages, scrollToBottom]);
 
   return (
-    <div className={`flex h-[calc(100vh-80px)] mt-20 ${currentTheme.chatContainer} ${className} overflow-hidden font-sans antialiased text-slate-800 dark:text-slate-100 relative`}>
+    <div className={`flex h-screen mt-0 ${currentTheme.chatContainer} ${className} overflow-hidden font-sans antialiased text-slate-800 dark:text-slate-100 relative`}>
       {/* Sidebar - listing user conversation sessions */}
       <Sidebar />
 

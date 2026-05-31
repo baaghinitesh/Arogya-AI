@@ -6,6 +6,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
+  isHistorical?: boolean;
   metadata?: {
     tokens?: number;
     model?: string;

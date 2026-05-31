@@ -46,7 +46,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                   <TypewriterText 
                     text={message.content} 
                     messageId={message._id as string} 
-                    onType={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                    onType={() => messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })}
                   />
                 ) : (
                   <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base">{message.content}</p>
