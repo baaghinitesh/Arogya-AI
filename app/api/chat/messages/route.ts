@@ -3,6 +3,15 @@ import { Message, SendMessageRequest } from '@/lib/types/chat';
 import { nanoid } from 'nanoid';
 import { getUser } from '@/lib/db/queries';
 
+// Generate a smart conversation title from the first user message
+function generateTitle(message: string): string {
+  // Remove extra whitespace and truncate
+  const cleaned = message.trim().replace(/\s+/g, ' ');
+  // Capitalize first letter and truncate to 50 chars
+  const truncated = cleaned.length > 50 ? cleaned.slice(0, 47) + '...' : cleaned;
+  return truncated.charAt(0).toUpperCase() + truncated.slice(1);
+}
+
 // POST /api/chat/messages - Send a message and get AI response
 export async function POST(request: NextRequest) {
   try {
@@ -30,10 +39,25 @@ export async function POST(request: NextRequest) {
       ? activeUser.phone_number
       : '+910000000000'; // Default guest number
 
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+
+    // Check if this is the first message in the conversation
+    // (used to auto-set conversation title)
+    let isFirstMessage = false;
+    let updatedTitle: string | null = null;
+    try {
+      const historyRes = await fetch(`${apiBaseUrl}/api/conversation/${convoId}`, { cache: 'no-store' });
+      if (historyRes.ok) {
+        const historyData = await historyRes.json();
+        const existingMessages = historyData.messages || [];
+        isFirstMessage = existingMessages.length === 0;
+      }
+    } catch (_) {
+      // ignore — non-critical
+    }
+
     // Generate AI response by calling the FastAPI server
     let aiResponse = '';
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-    
     try {
       const apiResponse = await fetch(`${apiBaseUrl}/api/chat`, {
         method: 'POST',
@@ -62,6 +86,23 @@ export async function POST(request: NextRequest) {
       aiResponse = 'The healthcare server appears to be offline. Please verify the backend is running.';
     }
 
+    // Auto-update conversation title from first message
+    if (isFirstMessage && message.trim()) {
+      const newTitle = generateTitle(message.trim());
+      try {
+        const titleRes = await fetch(`${apiBaseUrl}/api/conversation/${convoId}/title`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: newTitle }),
+        });
+        if (titleRes.ok) {
+          updatedTitle = newTitle;
+        }
+      } catch (_) {
+        // ignore — non-critical
+      }
+    }
+
     // Create user message
     const userMessage: Message = {
       _id: nanoid(),
@@ -85,7 +126,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       userMessage,
       aiMessage,
-      success: true
+      success: true,
+      // Return updated title so frontend can refresh sidebar without a full reload
+      updatedTitle,
     });
   } catch (error) {
     console.error('Error sending message:', error);

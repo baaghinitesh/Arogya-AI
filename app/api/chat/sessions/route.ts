@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       title: convo.title || 'New Chat',
       language: 'en',
       messages: [],
-      createdAt: new Date(convo.updated_at),
+      createdAt: new Date(convo.created_at || convo.updated_at),
       updatedAt: new Date(convo.updated_at),
       isActive: true,
     }));

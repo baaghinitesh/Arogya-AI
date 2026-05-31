@@ -59,26 +59,6 @@ export default function RegisterPage() {
   const [gender, setGender] = useState('');
   const [pincode, setPincode] = useState('');
   const [language, setLanguage] = useState('en');
-  const [detectedLocation, setDetectedLocation] = useState('');
-  const [fetchingLocation, setFetchingLocation] = useState(false);
-
-  useEffect(() => {
-    if (pincode.length !== 6) { setDetectedLocation(''); return; }
-    setFetchingLocation(true);
-    setDetectedLocation('');
-    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
-          const po = data[0].PostOffice[0];
-          setDetectedLocation(`${po.Name}, ${po.District}, ${po.State}`);
-        } else {
-          setDetectedLocation(t('pincodeNotFound', 'Pincode valid, area not found.'));
-        }
-      })
-      .catch(() => setDetectedLocation(t('locationUnavailable', 'Location lookup unavailable.')))
-      .finally(() => setFetchingLocation(false));
-  }, [pincode, t]);
 
   const formatPhone = (p: string) => {
     let c = p.replace(/\D/g, '');
@@ -402,20 +382,8 @@ export default function RegisterPage() {
                       <input id="pincode" type="text" maxLength={6} value={pincode}
                         onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').substring(0, 6))}
                         placeholder={t('pincodePlaceholder', 'e.g. 110001')}
-                        className={FIELD + ' pr-10'} required />
-                      {fetchingLocation && (
-                        <Loader2 className="absolute right-3 w-4 h-4 text-teal-600 animate-spin" />
-                      )}
+                        className={FIELD} required />
                     </div>
-                    <AnimatePresence>
-                      {detectedLocation && (
-                        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
-                          className="bg-teal-50 border border-teal-100 p-2.5 rounded-xl flex items-center gap-2">
-                          <span className="text-teal-600 text-sm">📍</span>
-                          <p className="text-xs text-teal-900 font-bold">{detectedLocation}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
 
                   <div className="space-y-1.5">
@@ -495,6 +463,21 @@ export default function RegisterPage() {
               )}
 
             </AnimatePresence>
+
+            {/* ── Footer: sign-in link (steps 1–3 only) ── */}
+            {step < 4 && (
+              <div className="mt-5 pt-4 border-t border-slate-100 text-center">
+                <p className="text-sm text-slate-500">
+                  {t('alreadyRegistered', 'Already registered?')}{' '}
+                  <Link
+                    href="/sign-in"
+                    className="text-teal-600 hover:text-teal-800 font-bold hover:underline underline-offset-4 transition-all"
+                  >
+                    {t('signInHere', 'Sign in here')}
+                  </Link>
+                </p>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

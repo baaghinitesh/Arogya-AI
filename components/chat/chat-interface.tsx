@@ -65,6 +65,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
   const [backgroundTheme, setBackgroundTheme] = useState('default');
   const [user, setUser] = useState<any>(null);
   const [isGuest, setIsGuest] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true); // Prevents login popup flash on reload
   
   // Voice support
   const [speechRecognition, setSpeechRecognition] = useState<SpeechRecognitionState>({
@@ -107,10 +108,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
           } else {
             setIsGuest(true);
           }
+        } else {
+          setIsGuest(true);
         }
       } catch (e) {
         console.error('Failed to fetch user session:', e);
         setIsGuest(true);
+      } finally {
+        setIsAuthLoading(false); // Auth check complete, safe to show UI
       }
     };
     fetchUser();
@@ -285,6 +290,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
       if (response.ok) {
         // replace temp user message with server userMessage and append aiMessage
         setMessages(prev => [...prev.slice(0, -1), data.userMessage, data.aiMessage]);
+        
+        // If the backend auto-titled this conversation (first message), update sidebar
+        if (data.updatedTitle && currentSession) {
+          const updatedTitle = data.updatedTitle;
+          setSessions(prev =>
+            prev.map(s =>
+              s._id === currentSession._id ? { ...s, title: updatedTitle } : s
+            )
+          );
+          setCurrentSession(prev => prev ? { ...prev, title: updatedTitle } : prev);
+        }
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -322,11 +338,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
     }
   };
 
-  const handleSelectSession = (session: ChatSession) => {
+  const handleSelectSession = async (session: ChatSession) => {
     setCurrentSession(session);
-    setMessages(session.messages || []);
+    setMessages([]); // Clear immediately for responsiveness
     if (window.innerWidth < 1024) {
       setIsSidebarCollapsed(true);
+    }
+    // Fetch actual messages from the server for this session
+    try {
+      const response = await fetch(`/api/chat/sessions/${session._id}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.session) {
+          setMessages(data.session.messages || []);
+          // Also update the title if server has a better one
+          if (data.session.title && data.session.title !== 'Chat') {
+            setCurrentSession(prev => prev ? { ...prev, title: data.session.title } : prev);
+            setSessions(prev =>
+              prev.map(s => s._id === session._id ? { ...s, title: data.session.title } : s)
+            );
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load session messages:', error);
     }
   };
 
@@ -356,7 +391,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className = '' }) => {
           currentTheme={currentTheme}
         />
 
-        {isGuest && (
+        {/* Show login popup only after auth check is complete and user is confirmed guest */}
+        {!isAuthLoading && isGuest && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}

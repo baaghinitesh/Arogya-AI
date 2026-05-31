@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
   ChatBubbleLeftRightIcon, 
@@ -11,7 +11,8 @@ import {
   DocumentTextIcon,
   ShieldCheckIcon,
   StarIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import WhatsAppButton from '@/components/whatsapp-button';
@@ -22,6 +23,7 @@ import Image from 'next/image';
 const HomePage = () => {
   const { t } = useTranslation();
   const [showSplash, setShowSplash] = useState(true);
+  const [showRegisterPopup, setShowRegisterPopup] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -34,12 +36,92 @@ const HomePage = () => {
     }
   }, []);
 
+  // Check auth after splash — show popup if not registered
+  useEffect(() => {
+    if (showSplash) return;
+    fetch('/api/user')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.phone_number) setShowRegisterPopup(true);
+      })
+      .catch(() => setShowRegisterPopup(true));
+  }, [showSplash]);
+
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50/70 via-slate-50 to-emerald-50/70">
+
+      {/* ── Registration popup ── */}
+      <AnimatePresence>
+        {showRegisterPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+              className="bg-white rounded-3xl border border-slate-100 p-7 max-w-md w-full shadow-2xl relative"
+            >
+              {/* Dismiss */}
+              <button
+                onClick={() => setShowRegisterPopup(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+                aria-label="Dismiss"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+
+              {/* Icon */}
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20 mb-5">
+                <ShieldCheckIcon className="w-8 h-8 text-white" />
+              </div>
+
+              {/* Copy */}
+              <div className="text-center space-y-2 mb-6">
+                <h2 className="text-2xl font-extrabold text-slate-900">
+                  Welcome to Arogya AI
+                </h2>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  To access personalized health guidance, secure medical records, and WhatsApp sync — register your mobile number. It only takes 30 seconds.
+                </p>
+                <p className="text-sm font-semibold text-teal-600">
+                  Already registered? Sign in to continue.
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/register"
+                  className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-teal-500/20 hover:shadow-xl transition-all text-center text-sm"
+                >
+                  🚀 Register Free — Get Started
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="w-full py-3.5 border border-slate-200 hover:border-teal-300 hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-bold rounded-2xl transition-all text-center text-sm"
+                >
+                  Sign In to My Account
+                </Link>
+                <button
+                  onClick={() => setShowRegisterPopup(false)}
+                  className="text-xs text-slate-400 hover:text-slate-600 transition-colors pt-1"
+                >
+                  Continue browsing as guest
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Hero Section */}
       <section className="relative px-4 pt-24 pb-16 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Elements */}

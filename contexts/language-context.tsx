@@ -94,38 +94,30 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const changeLanguage = (langCode: string) => {
     const language = SUPPORTED_LANGUAGES.find(lang => lang.code === langCode);
-    if (language) {
-      setCurrentLanguage(language);
-      i18n.changeLanguage(langCode);
-      localStorage.setItem('arogya-language', langCode);
-      document.documentElement.lang = langCode;
+    if (!language) return;
 
-      // Sync with server if user is logged in
-      updateUserLanguageAction(langCode).catch(err => {
-        console.error('Failed to sync language to server:', err);
-      });
+    // Skip if already on this language
+    if (langCode === i18n.language) return;
 
-      // Set cookie for Google Translate (map od to or)
-      const googleLangCode = langCode === 'od' ? 'or' : langCode;
-      document.cookie = `googtrans=/en/${googleLangCode}; path=/`;
-      document.cookie = `googtrans=/en/${googleLangCode}; path=/; domain=${window.location.hostname}`;
+    setCurrentLanguage(language);
+    i18n.changeLanguage(langCode);
+    localStorage.setItem('arogya-language', langCode);
+    document.documentElement.lang = langCode;
 
-      // Force a reload to apply global translation instantly
-      const getCookie = (name: string) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(';').shift();
-        return undefined;
-      };
+    // Sync with server if user is logged in (fire and forget)
+    updateUserLanguageAction(langCode).catch(err => {
+      console.error('Failed to sync language to server:', err);
+    });
 
-      const currentCookie = getCookie('googtrans');
-      const expectedCookieValue = `/en/${googleLangCode}`;
-      if (currentCookie !== expectedCookieValue) {
-        window.location.reload();
-      } else {
-        // Fallback reload if it was already set but needs a refresh
-        window.location.reload();
-      }
+    // Set cookie for Google Translate (map od → or)
+    const googleLangCode = langCode === 'od' ? 'or' : langCode;
+    document.cookie = `googtrans=/en/${googleLangCode}; path=/`;
+    document.cookie = `googtrans=/en/${googleLangCode}; path=/; domain=${window.location.hostname}`;
+
+    // Only reload when switching TO a different Google Translate language
+    // (needed for Google Translate widget to pick up the new cookie)
+    if (langCode !== 'en') {
+      window.location.reload();
     }
   };
 

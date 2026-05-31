@@ -35,24 +35,26 @@ export async function GET(
     
     // Map backend SQLite messages to frontend Message shape
     const messages: Message[] = (data.messages || []).map((msg: any, idx: number) => ({
-      _id: idx.toString(),
+      _id: msg.id?.toString() || idx.toString(),
       role: msg.role === 'assistant' ? 'ai' : 'user',
       content: msg.content,
-      timestamp: new Date(),
+      timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
     }));
 
     const session: ChatSession = {
       _id: sessionId,
-      userId: 'user',
-      title: 'Active Chat',
+      userId: data.phone_number || 'user',
+      title: data.title || 'Chat',
       language: 'en',
       messages,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: data.created_at ? new Date(data.created_at) : new Date(),
+      updatedAt: data.updated_at ? new Date(data.updated_at) : new Date(),
       isActive: true,
       metadata: {
         totalMessages: messages.length,
-        lastActivity: new Date(),
+        lastActivity: messages.length > 0 
+          ? messages[messages.length - 1].timestamp 
+          : new Date(),
       }
     };
 
