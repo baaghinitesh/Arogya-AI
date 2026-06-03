@@ -130,9 +130,16 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
 });
 
 export async function signOut() {
-  const user = (await getUser()) as User;
-  await logActivity(user.id, ActivityType.SIGN_OUT);
-  (await cookies()).delete('session');
+  try {
+    const user = await getUser();
+    if (user && user.id && typeof user.id === 'number') {
+      await logActivity(user.id, ActivityType.SIGN_OUT);
+    }
+  } catch (error) {
+    console.error('Error logging sign out activity:', error);
+  } finally {
+    (await cookies()).delete('session');
+  }
 }
 
 const updatePasswordSchema = z.object({
@@ -263,14 +270,14 @@ export const updateAccount = validatedActionWithUser(
 
 import { setPhoneSession } from '@/lib/auth/session';
 
-export async function sendPhoneOtpAction(phone_number: string) {
+export async function sendPhoneOtpAction(phone_number: string, purpose: 'login' | 'register' = 'login') {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/send-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone_number }),
+      body: JSON.stringify({ phone_number, purpose }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -282,6 +289,28 @@ export async function sendPhoneOtpAction(phone_number: string) {
     }
     console.error('sendPhoneOtpAction error:', error);
     return { success: false, message: 'Failed to connect to backend server' };
+  }
+}
+
+export async function verifyOtpOnlyAction(phone_number: string, otp: string) {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number, otp }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    if (error?.name === 'AbortError') {
+      return { success: false, message: 'Backend server is not responding. Please start the server.' };
+    }
+    console.error('verifyOtpOnlyAction error:', error);
+    return { success: false, message: 'Failed to verify OTP' };
   }
 }
 
@@ -345,6 +374,7 @@ export async function registerPhoneUserAction(payload: {
   gender: string;
   pincode: string;
   language: string;
+  otp: string;
 }) {
   try {
     const controller = new AbortController();
@@ -370,7 +400,7 @@ export async function registerPhoneUserAction(payload: {
       gender: data.gender,
       pincode: data.pincode,
       language: data.language,
-      token: 'registered_via_web',
+      token: data.token,
     });
     
     return { success: true, user: data };

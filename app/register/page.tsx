@@ -11,7 +11,7 @@ import {
   ArrowRight, ArrowLeft, Loader2, Smile, MessageSquare,
   Globe, Sparkles,
 } from 'lucide-react';
-import { registerPhoneUserAction } from '../(login)/actions';
+import { registerPhoneUserAction, sendPhoneOtpAction, verifyOtpOnlyAction } from '../(login)/actions';
 
 const languagesList = [
   { code: 'en',  name: 'English',   native: 'English'   },
@@ -60,21 +60,88 @@ export default function RegisterPage() {
   const [pincode, setPincode] = useState('');
   const [language, setLanguage] = useState('en');
 
+  // OTP and Verification States
+  const [otp, setOtp] = useState('');
+  const [otpStep, setOtpStep] = useState<'request' | 'verify'>('request');
+  const [timer, setTimer] = useState(0);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const startTimer = (s: number) => {
+    setTimer(s);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimer((p) => {
+        if (p <= 1) {
+          clearInterval(timerRef.current!);
+          return 0;
+        }
+        return p - 1;
+      });
+    }, 1000);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
   const formatPhone = (p: string) => {
     let c = p.replace(/\D/g, '');
     if (!c.startsWith('91') && c.length === 10) c = '91' + c;
     return c.startsWith('+') ? c : '+' + c;
   };
 
+  const handleSendOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setError('');
+    const digits = phoneNumber.replace(/\D/g, '');
+    if (digits.length < 10) {
+      setError(t('invalidPhone', 'Please enter a valid 10-digit mobile number.'));
+      return;
+    }
+    setLoading(true);
+    try {
+      const result = await sendPhoneOtpAction(formatPhone(phoneNumber), 'register');
+      if (result.success) {
+        setOtpStep('verify');
+        startTimer(60);
+      } else {
+        setError(result.message || t('otpSendFailed', 'Failed to send verification code.'));
+      }
+    } catch {
+      setError(t('connectionFailed', 'Connection failed. Please check your backend server.'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (otp.length < 6) {
+      setError(t('enterOtp', 'Please enter the 6-digit verification code.'));
+      return;
+    }
+    setLoading(true);
+    try {
+      const result = await verifyOtpOnlyAction(formatPhone(phoneNumber), otp);
+      if (result.success) {
+        setStep(2);
+      } else {
+        setError(result.message || t('invalidOtp', 'Invalid or expired OTP. Please try again.'));
+      }
+    } catch {
+      setError(t('verifyFailed', 'Failed to verify OTP. Please try again.'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (step === 1) {
-      if (phoneNumber.replace(/\D/g, '').length < 10) {
-        setError(t('invalidPhone', 'Please enter a valid 10-digit mobile number.')); return;
-      }
-      setStep(2);
-    } else if (step === 2) {
+    if (step === 2) {
       if (!name.trim()) { setError(t('nameRequired', 'Please enter your full name.')); return; }
       const a = parseInt(age);
       if (!age || isNaN(a) || a < 1 || a > 120) { setError(t('invalidAge', 'Please enter a valid age (1–120).')); return; }
@@ -98,6 +165,7 @@ export default function RegisterPage() {
         gender,
         pincode,
         language,
+        otp,
       });
       if (result.success) setStep(4);
       else setError(result.message || t('registrationFailed', 'Registration failed. Number may already be registered.'));
@@ -277,9 +345,9 @@ export default function RegisterPage() {
             <AnimatePresence>
               {error && (
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-xl text-rose-700 dark:text-rose-300 text-xs mb-4 flex items-start gap-2">
+                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-xl text-rose-700 dark:text-rose-300 text-xs mb-4 flex items-start gap-2 break-words overflow-hidden">
                   <span className="select-none">⚠️</span>
-                  <span className="font-semibold">{error}</span>
+                  <span className="font-semibold flex-1 min-w-0">{error}</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -287,35 +355,81 @@ export default function RegisterPage() {
             {/* ── Step forms ── */}
             <AnimatePresence mode="wait">
 
-              {/* STEP 1 — Phone */}
+              {/* STEP 1 — Phone & OTP Verification */}
               {step === 1 && (
-                <motion.form key="s1" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                  onSubmit={handleNext} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label htmlFor="phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300">{t('mobileNumber', 'Mobile Number')}</label>
-                    <div className={WRAPPER}>
-                      <div className="flex items-center px-3 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-l-xl text-slate-600 dark:text-slate-400 font-extrabold select-none shrink-0 text-xs h-11">
-                        🇮🇳 +91
+                <motion.form 
+                  key="s1" 
+                  initial={{ opacity: 0, y: 8 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -8 }}
+                  onSubmit={otpStep === 'request' ? handleSendOtp : handleVerifyOtp} 
+                  className="space-y-4"
+                >
+                  {otpStep === 'request' ? (
+                    <>
+                      <div className="space-y-1.5">
+                        <label htmlFor="phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {t('mobileNumber', 'Mobile Number')}
+                        </label>
+                        <div className={WRAPPER}>
+                          <div className="flex items-center px-3 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-l-xl text-slate-600 dark:text-slate-450 font-extrabold select-none shrink-0 text-xs h-11">
+                            🇮🇳 +91
+                          </div>
+                          <div className="relative flex-1">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                            <input id="phone" type="tel" value={phoneNumber}
+                              onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').substring(0, 10))}
+                              placeholder={t('phonePlaceholder', 'Enter 10-digit number')}
+                              className={FIELD} required />
+                          </div>
+                        </div>
                       </div>
-                      <div className="relative flex-1">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                        <input id="phone" type="tel" value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').substring(0, 10))}
-                          placeholder={t('phonePlaceholder', 'Enter 10-digit number')}
-                          className={FIELD} required />
+                      <button type="submit" disabled={loading || phoneNumber.length < 10} className={BTN_PRIMARY + ' w-full'}>
+                        {loading ? (
+                          <><Loader2 className="animate-spin w-4 h-4" /><span>{t('sendingCode', 'Sending code...')}</span></>
+                        ) : (
+                          <><span>{t('getVerificationCode', 'Get Verification Code')}</span><ArrowRight className="w-4 h-4" /></>
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="space-y-1.5">
+                        <label htmlFor="otp" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {t('otpCode', '6-Digit OTP Code')}
+                        </label>
+                        <div className={WRAPPER}>
+                          <input id="otp" type="text" inputMode="numeric" pattern="\d*" maxLength={6}
+                            value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
+                            placeholder={t('otpPlaceholder', 'Enter 6-digit code')}
+                            className={FIELD + ' tracking-[0.3em] font-bold pl-4'} required />
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl p-3 flex items-start gap-2">
-                    <span className="text-base select-none">💡</span>
-                    <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed font-semibold">
-                      {t('devTip', 'Testing? Use verification code')} <code className="bg-amber-100 dark:bg-slate-900 px-1 py-0.5 rounded font-mono text-amber-900 dark:text-amber-200">123456</code> {t('devTipSuffix', 'at login.')}
-                    </p>
-                  </div>
-                  <button type="submit" disabled={phoneNumber.length < 10} className={BTN_PRIMARY + ' w-full'}>
-                    <span>{t('continueToProfile', 'Continue to Profile')}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                      <div className="flex items-center justify-between text-xs">
+                        <button type="button" onClick={() => setOtpStep('request')}
+                          className="text-slate-555 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1 font-medium cursor-pointer">
+                          <ArrowLeft className="w-3.5 h-3.5" /><span>{t('changeNumber', 'Change Number')}</span>
+                        </button>
+                        {timer > 0 ? (
+                          <span className="text-slate-400 dark:text-slate-500 font-medium">
+                            {t('resendIn', 'Resend in')} <strong className="text-teal-600 dark:text-teal-400 font-bold">{timer}s</strong>
+                          </span>
+                        ) : (
+                          <button type="button" onClick={() => handleSendOtp()} disabled={loading}
+                            className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-350 font-semibold underline underline-offset-4 cursor-pointer">
+                            {t('resendCode', 'Resend Code')}
+                          </button>
+                        )}
+                      </div>
+                      <button type="submit" disabled={loading || otp.length < 6} className={BTN_PRIMARY + ' w-full'}>
+                        {loading ? (
+                          <><Loader2 className="animate-spin w-4 h-4" /><span>{t('verifying', 'Verifying...')}</span></>
+                        ) : (
+                          <><span>{t('verifyAndContinue', 'Verify & Continue')}</span><ArrowRight className="w-4 h-4" /></>
+                        )}
+                      </button>
+                    </>
+                  )}
                 </motion.form>
               )}
 

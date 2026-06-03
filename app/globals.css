@@ -177,6 +177,27 @@
   }
 }
 
+/* ── Chat textarea custom scrollbar ── */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+}
+.scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+}
+.dark .scrollbar-thumb-slate-600::-webkit-scrollbar-thumb,
+.scrollbar-thumb-slate-600::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+
 /* Google Translate Widget Premium Native Styling Override */
 .skiptranslate, 
 .goog-te-banner-frame, 
@@ -266,4 +287,4 @@ html, body {
 .dark .docs-content a.group:hover {
   border-color: rgba(13, 148, 136, 0.8) !important;
 }
-
+

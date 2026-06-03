@@ -26,7 +26,6 @@ export default function AuthPage() {
               <li>• Twilio Verify sends SMS OTP</li>
               <li>• 6-digit code, expires in 10 minutes</li>
               <li>• JWT token issued on verification</li>
-              <li>• Mock code <code className="font-mono bg-teal-100 px-1 rounded">123456</code> in dev mode</li>
               <li>• Used by WhatsApp and web users</li>
             </ul>
           </div>
@@ -77,10 +76,6 @@ export default function AuthPage() {
 
 def verify_otp_code(phone_number: str, code: str) -> dict:
     """Verify OTP code."""
-    # Dev mock: code "123456" always passes
-    if code == "123456":
-        return {"success": True, "message": "OTP verified (Mock)"}
-
     verification_check = client.verify.services(
         TWILIO_VERIFY_SERVICE_SID
     ).verification_checks.create(
@@ -90,12 +85,6 @@ def verify_otp_code(phone_number: str, code: str) -> dict:
     if verification_check.status == "approved":
         return {"success": True, "message": "OTP verified"}
     return {"success": False, "message": "Invalid or expired OTP"}`} />
-
-        <InfoCard type="warning" title="Development Mock Mode">
-          When <code className="font-mono text-xs bg-amber-100 px-1 rounded">TWILIO_VERIFY_SERVICE_SID</code> is not set,
-          the system falls back to a mock mode. OTP code <strong>123456</strong> will always be accepted.
-          A log message is printed: <code className="font-mono text-xs bg-amber-100 px-1 rounded">🔑 [DEV MOCK OTP] Verification code for +91... is: 123456</code>
-        </InfoCard>
       </DocSection>
 
       <DocSection title="JWT Token Management">

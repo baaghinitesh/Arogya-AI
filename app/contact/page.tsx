@@ -215,19 +215,29 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email</h3>
-                  <p className="text-gray-600 dark:text-gray-300">support@arogyaai.com</p>
+                  <a
+                    href="mailto:baaghinitesh@gmail.com"
+                    className="text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                  >
+                    baaghinitesh@gmail.com
+                  </a>
                   <p className="text-sm text-gray-500 dark:text-gray-400">We'll respond within 24 hours</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <PhoneIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">WhatsApp Support</h3>
-                  <p className="text-gray-600 dark:text-gray-300">+91 98765 43210</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Available 24/7 for health assistance</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Phone / WhatsApp</h3>
+                  <a
+                    href="tel:+918274820374"
+                    className="text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                  >
+                    +91 82748 20374
+                  </a>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Available for health assistance</p>
                 </div>
               </div>
 
@@ -237,8 +247,8 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Location</h3>
-                  <p className="text-gray-600 dark:text-gray-300">Bhubaneswar, Odisha, India</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Serving all of Odisha</p>
+                  <p className="text-gray-600 dark:text-gray-300">Kolkata, West Bengal, India</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Serving patients across India</p>
                 </div>
               </div>
             </div>

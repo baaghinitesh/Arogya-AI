@@ -114,24 +114,23 @@ export default function ApiReferencePage() {
 
       {/* ── AUTH ── */}
       <DocSection title="Authentication">
-        <ApiEndpoint method="POST" path="/auth/send-otp" description="Send an OTP to a registered phone number via Twilio Verify (SMS). Returns mock OTP 123456 in development mode.">
+        <ApiEndpoint method="POST" path="/auth/send-otp" description="Send an OTP to a phone number via Twilio Verify (SMS).">
           <DocSubSection title="Request Body">
             <PropTable rows={[
-              { name: 'phone_number', type: 'string', required: true, description: 'Registered E.164 phone number.' },
+              { name: 'phone_number', type: 'string', required: true, description: 'E.164 phone number.' },
+              { name: 'purpose', type: 'string', required: false, description: 'Purpose of OTP: "login" or "register". Default: "login".' },
             ]} />
           </DocSubSection>
           <DocSubSection title="Response">
-            <CodeBlock language="json" code={`{ "success": true, "message": "OTP sent" }
-// Dev mode:
-{ "success": true, "message": "OTP sent (Mock: 123456)" }`} />
+            <CodeBlock language="json" code={`{ "success": true, "message": "OTP sent" }`} />
           </DocSubSection>
         </ApiEndpoint>
 
         <ApiEndpoint method="POST" path="/auth/verify-otp" description="Verify the OTP and receive a JWT access token. Token is valid for 24 hours.">
           <DocSubSection title="Request Body">
             <PropTable rows={[
-              { name: 'phone_number', type: 'string', required: true, description: 'Registered E.164 phone number.' },
-              { name: 'otp', type: 'string', required: true, description: '6-digit OTP code. Use "123456" in development.' },
+              { name: 'phone_number', type: 'string', required: true, description: 'E.164 phone number.' },
+              { name: 'otp', type: 'string', required: true, description: '6-digit OTP code.' },
             ]} />
           </DocSubSection>
           <DocSubSection title="Response">

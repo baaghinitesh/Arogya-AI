@@ -217,8 +217,8 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             <AnimatePresence mode="wait">
               {error && (
                 <motion.div key="err" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-2xl text-rose-750 dark:text-rose-350 text-sm mb-4 flex items-start gap-2">
-                  <span className="font-bold select-none">⚠️</span><span>{error}</span>
+                  className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 p-3 rounded-2xl text-rose-750 dark:text-rose-350 text-sm mb-4 flex items-start gap-2 break-words overflow-hidden">
+                  <span className="font-bold select-none">⚠️</span><span className="flex-1 min-w-0">{error}</span>
                 </motion.div>
               )}
               {success && (
