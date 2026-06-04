@@ -38,7 +38,7 @@
     "lucide-react": "^0.511.0",
     "mongodb": "^6.19.0",
     "nanoid": "^5.1.5",
-    "next": "15.4.0-canary.47",
+    "next": "15.5.19",
     "postcss": "^8.5.3",
     "postgres": "^3.4.5",
     "radix-ui": "^1.4.2",
