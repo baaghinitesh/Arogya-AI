@@ -2,16 +2,12 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   experimental: {
-    ppr: true,
-    clientSegmentCache: true,
-    nodeMiddleware: true
+    // ppr and clientSegmentCache are canary-only — keep disabled for stable Vercel builds
+    // ppr: true,
+    // clientSegmentCache: true,
+    nodeMiddleware: true   // required for middleware.ts using Node.js runtime
   },
-  allowedDevOrigins: [
-    '*.clackypaas.com',
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0'
-  ],
+  // allowedDevOrigins is dev-only, not needed in production
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
